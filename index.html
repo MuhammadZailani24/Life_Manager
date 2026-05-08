@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Hub - Keuangan & Tugas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden selection:bg-teal-200 selection:text-teal-900">
+
+    <!-- Mobile Header & Hamburger -->
+    <div class="md:hidden fixed w-full bg-slate-900 text-white z-40 flex justify-between items-center p-4 shadow-md">
+        <h1 class="text-xl font-bold tracking-wider text-teal-400">Life Manager <i class="fa-solid fa-wallet"></i></h1>
+        <button id="btn-hamburger" class="text-slate-300 hover:text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Overlay Sidebar Mobile -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden md:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 w-64 bg-slate-900 text-slate-300 shadow-2xl flex flex-col justify-between h-full">
+        <div>
+            <div class="p-6 text-center border-b border-slate-800 hidden md:block">
+                <h1 class="text-2xl font-bold tracking-wider text-white">Life Manager <i class="fa-solid fa-wallet text-teal-500"></i></h1>
+            </div>
+            <div class="p-4 md:hidden flex justify-end border-b border-slate-800">
+                <button id="btn-close-sidebar" class="text-slate-400 hover:text-white focus:outline-none">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            <nav class="mt-4 flex flex-col gap-2 px-4">
+                <button onclick="nav('dashboard')" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition active-nav" id="btn-dashboard">
+                    <i class="fa-solid fa-chart-pie w-6 text-slate-400 nav-icon"></i> Dashboard
+                </button>
+                <button onclick="nav('transaksi')" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition" id="btn-transaksi">
+                    <i class="fa-solid fa-money-arrow-right-left w-6 text-slate-400 nav-icon"></i> Catat Transaksi
+                </button>
+                <button onclick="nav('tugas')" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition" id="btn-tugas">
+                    <i class="fa-solid fa-list-check w-6 text-slate-400 nav-icon"></i> Tugas Kuliah
+                </button>
+                <button onclick="nav('cicilan')" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition" id="btn-cicilan">
+                    <i class="fa-solid fa-calendar-check w-6 text-slate-400 nav-icon"></i> Pengingat Cicilan
+                </button>
+                <button onclick="checkPasswordAndNav()" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-rose-950/50 hover:text-rose-300 transition text-slate-400 mt-6 border border-slate-800" id="btn-akun">
+                    <i class="fa-solid fa-lock w-6 text-rose-400"></i> Akun Penting
+                </button>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-8 overflow-y-auto mt-14 md:mt-0 glass-panel relative z-10 w-full">
+        
+        <!-- SECTION: Dashboard -->
+        <section id="sec-dashboard" class="content-section block animate-fade-in">
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Ringkasan</h2>
+            
+            <!-- Info Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-slate-500 text-sm font-medium mb-1"><i class="fa-solid fa-wallet text-teal-500 mr-1"></i> Cash</h3>
+                    <p class="text-2xl font-bold text-slate-800" id="saldo-cash">Rp 0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-slate-500 text-sm font-medium mb-1"><i class="fa-regular fa-credit-card text-indigo-500 mr-1"></i> Saldo ATM</h3>
+                    <p class="text-2xl font-bold text-slate-800" id="saldo-atm">Rp 0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-slate-500 text-sm font-medium mb-1"><i class="fa-solid fa-book text-amber-500 mr-1"></i> Tugas Kuliah</h3>
+                    <p class="text-2xl font-bold text-slate-800" id="jumlah-tugas">0 <span class="text-sm font-normal text-slate-400">Tugas</span></p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-slate-500 text-sm font-medium mb-1"><i class="fa-solid fa-file-invoice-dollar text-rose-500 mr-1"></i> Total Cicilan</h3>
+                    <p class="text-2xl font-bold text-slate-800" id="jumlah-cicilan">0 <span class="text-sm font-normal text-slate-400">Tagihan</span></p>
+                </div>
+            </div>
+
+            <!-- Panduan Penggunaan -->
+            <div class="bg-slate-100 border border-slate-200 p-6 rounded-2xl mb-8 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-3"><i class="fa-solid fa-circle-info text-teal-600 mr-2"></i> Panduan Penggunaan</h3>
+                <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
+                    <li>Gunakan menu <b>Catat Transaksi</b> untuk menambah Pemasukan atau Pengeluaran. Saldo otomatis terupdate.</li>
+                    <li>Catat kegiatan di menu <b>Tugas Kuliah</b>. Centang kotak di samping tugas jika sudah selesai dikerjakan.</li>
+                    <li>Tambahkan tanggal jatuh tempo di menu <b>Pengingat Cicilan</b> agar tidak lupa bayar tagihan bulanan.</li>
+                    <li>Simpan password atau data rahasia di menu <b>Akun Penting</b>. Menu ini diamankan menggunakan PIN pribadi Anda.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-800 mb-4">Riwayat Terakhir</h3>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                <ul id="list-riwayat" class="space-y-4">
+                    <!-- List riwayat via JS -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION: Transaksi -->
+        <section id="sec-transaksi" class="content-section hidden animate-fade-in">
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Catat Transaksi</h2>
+            <form id="form-transaksi" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 max-w-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Jenis</label>
+                        <select id="jenis-trx" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition">
+                            <option value="masuk">Pemasukan (+)</option>
+                            <option value="keluar">Pengeluaran (-)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Dompet</label>
+                        <select id="dompet-trx" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition">
+                            <option value="cash">Cash</option>
+                            <option value="atm">Saldo ATM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Nominal (Rp)</label>
+                    <input type="number" id="nominal-trx" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition" required>
+                </div>
+                <div class="mb-8">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Keterangan</label>
+                    <input type="text" id="ket-trx" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition" placeholder="Misal: Uang saku, Beli kuota, dll" required>
+                </div>
+                <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3.5 rounded-xl w-full font-bold transition shadow-md shadow-teal-500/30">Simpan Transaksi</button>
+            </form>
+        </section>
+
+        <!-- SECTION: Tugas Kuliah -->
+        <section id="sec-tugas" class="content-section hidden animate-fade-in">
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Tugas Kuliah & Kegiatan</h2>
+            <form id="form-tugas" class="flex flex-col md:flex-row gap-3 mb-6">
+                <input type="text" id="input-tugas" class="flex-1 bg-white border border-slate-200 shadow-sm rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-teal-500 transition" placeholder="Ketik tugas atau kegiatan baru..." required>
+                <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-8 py-3.5 rounded-xl font-bold transition shadow-md md:w-auto w-full"><i class="fa-solid fa-plus mr-1"></i> Tambah</button>
+            </form>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                <ul id="list-tugas" class="space-y-3">
+                    <!-- List tugas via JS -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION: Cicilan -->
+        <section id="sec-cicilan" class="content-section hidden animate-fade-in">
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Pengingat Cicilan</h2>
+            <form id="form-cicilan" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 md:items-end">
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Nama Cicilan / Tagihan</label>
+                    <input type="text" id="nama-cicilan" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" required>
+                </div>
+                <div class="w-full md:w-48">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Jatuh Tempo (Tgl)</label>
+                    <input type="number" min="1" max="31" id="tgl-cicilan" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" placeholder="Contoh: 15" required>
+                </div>
+                <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-8 py-3 rounded-xl font-bold transition shadow-md mt-2 md:mt-0">Tambah</button>
+            </form>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="list-cicilan">
+                <!-- List cicilan via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION: Akun Penting -->
+        <section id="sec-akun" class="content-section hidden animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-800"><i class="fa-solid fa-shield-halved text-rose-500 mr-2"></i> Data Akun Penting</h2>
+                <button onclick="lockAccounts()" class="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2"><i class="fa-solid fa-lock"></i> Kunci Kembali</button>
+            </div>
+            
+            <form id="form-akun" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 md:items-end">
+                 <div class="flex-1">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Platform (Misal: IG)</label>
+                    <input type="text" id="platform-akun" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-rose-500 focus:outline-none transition" required>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Username / Email</label>
+                    <input type="text" id="user-akun" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-rose-500 focus:outline-none transition" required>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Password</label>
+                    <input type="text" id="pass-akun" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-rose-500 focus:outline-none transition" required>
+                </div>
+                <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white px-8 py-3 rounded-xl font-bold transition shadow-md shadow-rose-500/30 mt-2 md:mt-0">Simpan</button>
+            </form>
+            <div class="space-y-4" id="list-akun">
+                <!-- List akun via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Password -->
+    <div id="password-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center hidden z-50 px-4 transition-all duration-300">
+        <div class="bg-white p-8 rounded-3xl max-w-sm w-full shadow-2xl border-t-4 border-rose-500 transform transition-transform scale-95" id="modal-content">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-lock text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Verifikasi PIN</h3>
+                <p class="text-sm text-slate-500 mt-2">Masukkan PIN rahasia untuk membuka.</p>
+            </div>
+            <input type="password" id="input-password" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-center mb-6 focus:outline-none focus:ring-2 focus:ring-rose-500 text-2xl tracking-widest transition" placeholder="••••">
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3.5 rounded-xl transition">Batal</button>
+                <button onclick="verifyPassword()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition shadow-md">Buka</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+/* Mengkustomisasi Scrollbar agar rapi */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f8fafc; /* slate-50 */
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1; /* slate-300 */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; /* slate-400 */
+}
+
+/* Glassmorphism Effect Modern (Sangat Halus) */
+.glass-panel {
+    background-color: #f8fafc;
+    background-image: radial-gradient(at 100% 0%, hsla(168, 64%, 93%, 0.5) 0px, transparent 50%),
+                      radial-gradient(at 0% 100%, hsla(210, 40%, 96%, 1) 0px, transparent 50%);
+}
+
+/* Sidebar Active Nav */
+.active-nav {
+    background-color: #1e293b; /* slate-800 */
+    color: #ffffff;
+}
+.active-nav .nav-icon {
+    color: #14b8a6; /* teal-500 */
+}
+
+/* Checklist Coret Animasi */
+.task-done {
+    text-decoration: line-through;
+    color: #94a3b8; /* slate-400 */
+    transition: all 0.3s ease;
+}
+
+/* Animasi Fade In */
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animasi Modal Pop */
+.modal-pop {
+    transform: scale(1) !important;
+}
