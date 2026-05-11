@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Hub - Keuangan & Tugas</title>
+    <title>Life Manager</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
@@ -14,7 +14,7 @@
 
     <!-- Mobile Header & Hamburger -->
     <div class="md:hidden fixed w-full bg-slate-900 text-white z-40 flex justify-between items-center p-4 shadow-md">
-        <h1 class="text-xl font-bold tracking-wider text-teal-400">Life Manager <i class="fa-solid fa-wallet"></i></h1>
+        <h1 class="text-xl font-bold tracking-wider text-teal-400">Life Manager <i class="fa-solid fa-cube"></i></h1>
         <button id="btn-hamburger" class="text-slate-300 hover:text-white focus:outline-none">
             <i class="fa-solid fa-bars text-2xl"></i>
         </button>
@@ -27,7 +27,7 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 w-64 bg-slate-900 text-slate-300 shadow-2xl flex flex-col justify-between h-full">
         <div>
             <div class="p-6 text-center border-b border-slate-800 hidden md:block">
-                <h1 class="text-2xl font-bold tracking-wider text-white">Life Manager <i class="fa-solid fa-wallet text-teal-500"></i></h1>
+                <h1 class="text-2xl font-bold tracking-wider text-white">Life Manager <i class="fa-solid fa-cube text-teal-500"></i></h1>
             </div>
             <div class="p-4 md:hidden flex justify-end border-b border-slate-800">
                 <button id="btn-close-sidebar" class="text-slate-400 hover:text-white focus:outline-none">
@@ -45,7 +45,7 @@
                     <i class="fa-solid fa-list-check w-6 text-slate-400 nav-icon"></i> Tugas Kuliah
                 </button>
                 <button onclick="nav('cicilan')" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition" id="btn-cicilan">
-                    <i class="fa-solid fa-calendar-check w-6 text-slate-400 nav-icon"></i> Pengingat Cicilan
+                    <i class="fa-solid fa-calendar-check w-6 text-slate-400 nav-icon"></i> Pengingat Tagihan
                 </button>
                 <button onclick="checkPasswordAndNav()" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-rose-950/50 hover:text-rose-300 transition text-slate-400 mt-6 border border-slate-800" id="btn-akun">
                     <i class="fa-solid fa-lock w-6 text-rose-400"></i> Akun Penting
@@ -76,7 +76,7 @@
                     <p class="text-2xl font-bold text-slate-800" id="jumlah-tugas">0 <span class="text-sm font-normal text-slate-400">Tugas</span></p>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <h3 class="text-slate-500 text-sm font-medium mb-1"><i class="fa-solid fa-file-invoice-dollar text-rose-500 mr-1"></i> Total Cicilan</h3>
+                    <h3 class="text-slate-500 text-sm font-medium mb-1"><i class="fa-solid fa-file-invoice-dollar text-rose-500 mr-1"></i> Total Tagihan</h3>
                     <p class="text-2xl font-bold text-slate-800" id="jumlah-cicilan">0 <span class="text-sm font-normal text-slate-400">Tagihan</span></p>
                 </div>
             </div>
@@ -87,8 +87,8 @@
                 <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
                     <li>Gunakan menu <b>Catat Transaksi</b> untuk menambah Pemasukan atau Pengeluaran. Saldo otomatis terupdate.</li>
                     <li>Catat kegiatan di menu <b>Tugas Kuliah</b>. Centang kotak di samping tugas jika sudah selesai dikerjakan.</li>
-                    <li>Tambahkan tanggal jatuh tempo di menu <b>Pengingat Cicilan</b> agar tidak lupa bayar tagihan bulanan.</li>
-                    <li>Simpan password atau data rahasia di menu <b>Akun Penting</b>. Menu ini diamankan menggunakan PIN pribadi Anda.</li>
+                    <li>Tambahkan tanggal jatuh tempo di menu <b>Pengingat Tagihan</b> agar tidak lupa bayar tagihan bulanan.</li>
+                    <li>Simpan password atau data rahasia di menu <b>Akun Penting</b>. Menu ini diamankan menggunakan PIN rahasia Anda.</li>
                 </ul>
             </div>
 
@@ -146,20 +146,26 @@
             </div>
         </section>
 
-        <!-- SECTION: Cicilan -->
+        <!-- SECTION: Pengingat Tagihan -->
         <section id="sec-cicilan" class="content-section hidden animate-fade-in">
-            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Pengingat Cicilan</h2>
-            <form id="form-cicilan" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 md:items-end">
-                <div class="flex-1">
-                    <label class="block text-sm font-medium text-slate-600 mb-2">Nama Cicilan / Tagihan</label>
-                    <input type="text" id="nama-cicilan" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" required>
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Pengingat Tagihan</h2>
+            
+            <form id="form-cicilan" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 md:items-end flex-wrap">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Nama Aplikasi / Tagihan</label>
+                    <input type="text" id="nama-tagihan" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" placeholder="Misal: Netflix, SPP, WiFi" required>
                 </div>
-                <div class="w-full md:w-48">
-                    <label class="block text-sm font-medium text-slate-600 mb-2">Jatuh Tempo (Tgl)</label>
-                    <input type="number" min="1" max="31" id="tgl-cicilan" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" placeholder="Contoh: 15" required>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Jumlah Tagihan (Rp)</label>
+                    <input type="number" id="jumlah-tagihan" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" placeholder="Misal: 150000" required>
                 </div>
-                <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-8 py-3 rounded-xl font-bold transition shadow-md mt-2 md:mt-0">Tambah</button>
+                <div class="w-full md:w-auto min-w-[200px]">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Jatuh Tempo (Tgl/Bln/Thn)</label>
+                    <input type="date" id="tgl-jatuh-tempo" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition" required>
+                </div>
+                <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-8 py-3 rounded-xl font-bold transition shadow-md mt-2 md:mt-0 w-full md:w-auto h-[50px]">Tambah</button>
             </form>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="list-cicilan">
                 <!-- List cicilan via JS -->
             </div>

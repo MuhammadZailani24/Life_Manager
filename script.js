@@ -5,7 +5,9 @@ let tugas = JSON.parse(localStorage.getItem('tugas')) || [];
 let cicilan = JSON.parse(localStorage.getItem('cicilan')) || [];
 let akunPenting = JSON.parse(localStorage.getItem('akunPenting')) || [];
 
-// PIN RAHASIA ADA DI SINI (Tidak terlihat di HTML)
+// ==========================================
+// PIN RAHASIA ADA DI SINI (Ubah angka 12345)
+// ==========================================
 const PIN_RAHASIA = "12345"; 
 
 // --- Logika Hamburger Menu (Mobile) ---
@@ -91,12 +93,14 @@ function hapusTugas(index) {
     updateUI();
 }
 
-// --- Cicilan ---
+// --- Pengingat Tagihan (Updated) ---
 document.getElementById('form-cicilan').addEventListener('submit', function(e) {
     e.preventDefault();
-    const nama = document.getElementById('nama-cicilan').value;
-    const tgl = document.getElementById('tgl-cicilan').value;
-    cicilan.push({ nama, tgl });
+    const nama = document.getElementById('nama-tagihan').value;
+    const jumlah = parseInt(document.getElementById('jumlah-tagihan').value);
+    const tanggalFull = document.getElementById('tgl-jatuh-tempo').value; // Format: YYYY-MM-DD
+    
+    cicilan.push({ nama, jumlah, tanggalFull });
     simpanData();
     this.reset();
     updateUI();
@@ -220,19 +224,34 @@ function updateUI() {
         `;
     });
 
-    // 4. Update Cicilan
+    // 4. Update Tagihan (Updated)
     const listCicilan = document.getElementById('list-cicilan');
     listCicilan.innerHTML = '';
-    if(cicilan.length === 0) listCicilan.innerHTML = '<p class="text-slate-400 text-sm italic py-2">Belum ada cicilan.</p>';
+    if(cicilan.length === 0) listCicilan.innerHTML = '<p class="text-slate-400 text-sm italic py-2">Belum ada tagihan dicatat.</p>';
+    
     cicilan.forEach((c, i) => {
+        // Mencegah error jika data lama masih tersimpan
+        if(!c.tanggalFull) {
+            c.tanggalFull = new Date().toISOString().split('T')[0];
+            c.jumlah = c.jumlah || 0;
+        }
+
+        const dateObj = new Date(c.tanggalFull);
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        const tanggalTampil = dateObj.toLocaleDateString('id-ID', options);
+        const jumlahTampil = formatRupiah(c.jumlah);
+
         listCicilan.innerHTML += `
             <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm relative overflow-hidden group">
                 <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-400"></div>
-                <div class="pl-2">
-                    <h4 class="font-bold text-slate-800 text-lg">${c.nama}</h4>
-                    <p class="text-sm text-slate-500 mt-1"><i class="fa-regular fa-calendar text-slate-400"></i> Jatuh Tempo: <span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold ml-1 border border-slate-200">Tgl ${c.tgl}</span></p>
+                <div class="pl-2 flex-1">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-bold text-slate-800 text-lg">${c.nama}</h4>
+                        <span class="font-bold text-rose-600">${jumlahTampil}</span>
+                    </div>
+                    <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar text-slate-400"></i> Jatuh Tempo: <span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-bold ml-1 border border-slate-200">${tanggalTampil}</span></p>
                 </div>
-                <button onclick="hapusCicilan(${i})" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-3 rounded-xl transition opacity-100 md:opacity-0 group-hover:opacity-100"><i class="fa-solid fa-trash"></i></button>
+                <button onclick="hapusCicilan(${i})" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-3 rounded-xl transition opacity-100 md:opacity-0 group-hover:opacity-100 ml-4"><i class="fa-solid fa-trash"></i></button>
             </div>
         `;
     });
