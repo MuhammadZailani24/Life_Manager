@@ -1,51 +1,22 @@
-// --- Inisialisasi Data ---
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxXPMmLYeiro2Bq2kOLnfbUjXNQKFCwD4SK7vupGsaWqNhpxIDu-8y_VHPelrT521JHqw/exec"; 
+const PIN_RAHASIA = "741963"; 
+
 let keuangan = JSON.parse(localStorage.getItem('keuangan')) || { cash: 0, atm: 0 };
 let riwayat = JSON.parse(localStorage.getItem('riwayat')) || [];
-let tugas = JSON.parse(localStorage.getItem('tugas')) || [];
+let tugas = JSON.parse(localStorage.getItem('tugasBaru')) || []; 
 let cicilan = JSON.parse(localStorage.getItem('cicilan')) || [];
 let akunPenting = JSON.parse(localStorage.getItem('akunPenting')) || [];
 
-// ==========================================
-// PIN RAHASIA ADA DI SINI (Ubah angka 12345)
-// ==========================================
-const PIN_RAHASIA = "12345"; 
-
-// --- Logika Hamburger Menu (Mobile) ---
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('sidebar-overlay');
-const btnHamburger = document.getElementById('btn-hamburger');
-const btnCloseSidebar = document.getElementById('btn-close-sidebar');
-
-function toggleSidebar() {
-    sidebar.classList.toggle('-translate-x-full');
-    overlay.classList.toggle('hidden');
-}
-
-btnHamburger.addEventListener('click', toggleSidebar);
-btnCloseSidebar.addEventListener('click', toggleSidebar);
-overlay.addEventListener('click', toggleSidebar);
-
-// --- Navigasi ---
 function nav(sectionId) {
-    document.querySelectorAll('.content-section').forEach(sec => {
-        sec.classList.add('hidden');
-        sec.classList.remove('block');
-    });
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active-nav');
-    });
-
+    document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav'));
     document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
-    document.getElementById(`btn-${sectionId}`).classList.add('active-nav');
-
-    if (window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
-        toggleSidebar();
-    }
-
+    const btnDesktop = document.getElementById(`btn-${sectionId}`);
+    if(btnDesktop) btnDesktop.classList.add('active-nav');
+    window.scrollTo(0, 0);
     updateUI();
 }
 
-// --- Keuangan ---
 function formatRupiah(angka) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
 }
@@ -56,223 +27,77 @@ document.getElementById('form-transaksi').addEventListener('submit', function(e)
     const dompet = document.getElementById('dompet-trx').value;
     const nominal = parseInt(document.getElementById('nominal-trx').value);
     const ket = document.getElementById('ket-trx').value;
-
-    if (jenis === 'masuk') {
-        keuangan[dompet] += nominal;
-    } else {
-        keuangan[dompet] -= nominal;
-    }
-
+    if (jenis === 'masuk') keuangan[dompet] += nominal; else keuangan[dompet] -= nominal;
     riwayat.unshift({ jenis, dompet, nominal, ket, tanggal: new Date().toLocaleDateString('id-ID') });
-    if(riwayat.length > 15) riwayat.pop(); 
-
-    simpanData();
-    this.reset();
-    nav('dashboard'); 
+    if(riwayat.length > 20) riwayat.pop(); 
+    simpanData(); this.reset(); nav('dashboard'); 
 });
 
-// --- Tugas Kuliah ---
-document.getElementById('form-tugas').addEventListener('submit', function(e) {
+document.getElementById('form-tugas').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const judul = document.getElementById('input-tugas').value;
-    tugas.push({ judul, selesai: false });
-    simpanData();
-    this.reset();
-    updateUI();
+    const tagihanBaru = { id: "TGS-" + Date.now(), namaTugas: document.getElementById('nama-tugas').value, matkul: document.getElementById('matkul-tugas').value, tipe: document.getElementById('tipe-tugas').value, deadline: document.getElementById('deadline-tugas').value, email: document.getElementById('email-tugas').value, status: "Belum Selesai" };
+    const btnSubmit = document.getElementById('btn-submit-tugas');
+    btnSubmit.innerText = "LOADING..."; btnSubmit.disabled = true;
+    tugas.push(tagihanBaru); simpanData(); updateUI();
+    try { await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "addTugas", ...tagihanBaru }), headers: { 'Content-Type': 'application/json' } }); alert("Tugas dicatat & Alarm diaktifkan!"); } catch(err) { console.error(err); }
+    btnSubmit.innerText = "SIMPAN TUGAS & ALARM"; btnSubmit.disabled = false; this.reset();
 });
 
-function toggleTugas(index) {
-    tugas[index].selesai = !tugas[index].selesai;
-    simpanData();
-    updateUI();
-}
-
-function hapusTugas(index) {
-    tugas.splice(index, 1);
-    simpanData();
-    updateUI();
-}
-
-// --- Pengingat Tagihan (Updated) ---
-document.getElementById('form-cicilan').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const nama = document.getElementById('nama-tagihan').value;
-    const jumlah = parseInt(document.getElementById('jumlah-tagihan').value);
-    const tanggalFull = document.getElementById('tgl-jatuh-tempo').value; // Format: YYYY-MM-DD
-    
-    cicilan.push({ nama, jumlah, tanggalFull });
-    simpanData();
-    this.reset();
-    updateUI();
-});
-
-function hapusCicilan(index) {
-    cicilan.splice(index, 1);
-    simpanData();
-    updateUI();
-}
-
-// --- Akun Penting ---
-function checkPasswordAndNav() {
-    document.getElementById('password-modal').classList.remove('hidden');
-    setTimeout(() => {
-        document.getElementById('modal-content').classList.add('modal-pop');
-    }, 10);
-
-    if (window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
-        toggleSidebar();
+async function selesaikanTugas(index) {
+    if(confirm(`Selesaikan tugas ${tugas[index].namaTugas}?`)) {
+        tugas[index].status = "Selesai"; simpanData(); updateUI();
+        try { await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "finishTugas", id: tugas[index].id }), headers: { 'Content-Type': 'application/json' } }); } catch(err) {}
     }
 }
+function hapusTugasLokal(index) { if(confirm("Hapus tampilan lokal?")) { tugas.splice(index, 1); simpanData(); updateUI(); } }
 
-function closeModal() {
-    document.getElementById('modal-content').classList.remove('modal-pop');
-    setTimeout(() => {
-        document.getElementById('password-modal').classList.add('hidden');
-        document.getElementById('input-password').value = '';
-    }, 300);
-}
+document.getElementById('form-cicilan').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const tagihanBaru = { id: "ID-" + Date.now(), nama: document.getElementById('nama-tagihan').value, jumlah: parseInt(document.getElementById('jumlah-tagihan').value), tanggalFull: document.getElementById('tgl-jatuh-tempo').value, email: document.getElementById('email-tagihan').value, status: "Belum Bayar" };
+    const btnSubmit = document.getElementById('btn-submit-tagihan');
+    btnSubmit.innerText = "LOADING..."; btnSubmit.disabled = true;
+    cicilan.push(tagihanBaru); simpanData(); updateUI();
+    try { await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "add", ...tagihanBaru }), headers: { 'Content-Type': 'application/json' } }); alert("Tagihan dicatat & Alarm diaktifkan!"); } catch(err) { console.error(err); }
+    btnSubmit.innerText = "SIMPAN TAGIHAN & ALARM"; btnSubmit.disabled = false; this.reset();
+});
 
-function verifyPassword() {
-    const input = document.getElementById('input-password').value;
-    if (input === PIN_RAHASIA) {
-        closeModal();
-        setTimeout(() => nav('akun'), 300); 
-    } else {
-        alert("PIN Salah! Silakan coba lagi.");
-        document.getElementById('input-password').value = '';
+async function bayarTagihan(index) {
+    if(confirm(`Sudah lunas membayar ${cicilan[index].nama}?`)) {
+        cicilan[index].status = "Lunas"; simpanData(); updateUI();
+        try { await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "pay", id: cicilan[index].id }), headers: { 'Content-Type': 'application/json' } }); } catch(err) {}
     }
 }
+function hapusCicilanLokal(index) { if(confirm("Hapus tampilan lokal?")) { cicilan.splice(index, 1); simpanData(); updateUI(); } }
 
-function lockAccounts() {
-    nav('dashboard');
-}
+function checkPasswordAndNav() { document.getElementById('password-modal').classList.remove('hidden'); }
+function closeModal() { document.getElementById('password-modal').classList.add('hidden'); document.getElementById('input-password').value = ''; }
+function verifyPassword() { if (document.getElementById('input-password').value === PIN_RAHASIA) { closeModal(); nav('akun'); } else { alert("PIN SALAH!"); document.getElementById('input-password').value = ''; } }
+function lockAccounts() { nav('dashboard'); }
 
 document.getElementById('form-akun').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const platform = document.getElementById('platform-akun').value;
-    const user = document.getElementById('user-akun').value;
-    const pass = document.getElementById('pass-akun').value;
-    
-    akunPenting.push({ platform, user, pass });
-    simpanData();
-    this.reset();
-    updateUI();
+    e.preventDefault(); akunPenting.push({ platform: document.getElementById('platform-akun').value, user: document.getElementById('user-akun').value, pass: document.getElementById('pass-akun').value });
+    simpanData(); this.reset(); updateUI();
 });
+function hapusAkun(index) { akunPenting.splice(index, 1); simpanData(); updateUI(); }
 
-function hapusAkun(index) {
-    akunPenting.splice(index, 1);
-    simpanData();
-    updateUI();
-}
-
-// --- Render & Update UI ---
-function simpanData() {
-    localStorage.setItem('keuangan', JSON.stringify(keuangan));
-    localStorage.setItem('riwayat', JSON.stringify(riwayat));
-    localStorage.setItem('tugas', JSON.stringify(tugas));
-    localStorage.setItem('cicilan', JSON.stringify(cicilan));
-    localStorage.setItem('akunPenting', JSON.stringify(akunPenting));
-}
+function simpanData() { localStorage.setItem('keuangan', JSON.stringify(keuangan)); localStorage.setItem('riwayat', JSON.stringify(riwayat)); localStorage.setItem('tugasBaru', JSON.stringify(tugas)); localStorage.setItem('cicilan', JSON.stringify(cicilan)); localStorage.setItem('akunPenting', JSON.stringify(akunPenting)); }
 
 function updateUI() {
-    // 1. Update Saldo & Counter
-    document.getElementById('saldo-cash').innerText = formatRupiah(keuangan.cash);
-    document.getElementById('saldo-atm').innerText = formatRupiah(keuangan.atm);
-    
-    const tugasPending = tugas.filter(t => !t.selesai).length;
-    document.getElementById('jumlah-tugas').innerHTML = `${tugasPending} <span class="text-sm font-normal text-slate-400">Pending</span>`;
-    document.getElementById('jumlah-cicilan').innerHTML = `${cicilan.length} <span class="text-sm font-normal text-slate-400">Tagihan</span>`;
+    document.getElementById('saldo-cash').innerText = formatRupiah(keuangan.cash); document.getElementById('saldo-atm').innerText = formatRupiah(keuangan.atm);
+    document.getElementById('jumlah-tugas').innerText = tugas.filter(t => t.status !== "Selesai").length; document.getElementById('jumlah-cicilan').innerText = cicilan.filter(c => c.status !== "Lunas").length;
 
-    // 2. Update Riwayat
-    const listRiwayat = document.getElementById('list-riwayat');
-    listRiwayat.innerHTML = '';
-    if(riwayat.length === 0) {
-        listRiwayat.innerHTML = '<p class="text-slate-400 text-sm italic text-center py-4">Belum ada aktivitas.</p>';
-    } else {
-        riwayat.forEach(r => {
-            const color = r.jenis === 'masuk' ? 'text-emerald-600' : 'text-rose-600';
-            const operator = r.jenis === 'masuk' ? '+' : '-';
-            const dompetTag = r.dompet === 'cash' ? 'bg-teal-50 text-teal-700 border-teal-100' : 'bg-indigo-50 text-indigo-700 border-indigo-100';
-            listRiwayat.innerHTML += `
-                <li class="flex justify-between items-center border-b border-slate-100 last:border-0 pb-4 mb-4 last:mb-0 last:pb-0">
-                    <div>
-                        <p class="font-bold text-slate-700">${r.ket}</p>
-                        <p class="text-xs text-slate-500 mt-1 flex items-center gap-2">
-                            <span><i class="fa-regular fa-clock"></i> ${r.tanggal}</span>
-                            <span class="px-2 py-0.5 rounded border text-[10px] font-bold ${dompetTag}">${r.dompet.toUpperCase()}</span>
-                        </p>
-                    </div>
-                    <span class="${color} font-bold text-lg">${operator} ${formatRupiah(r.nominal)}</span>
-                </li>
-            `;
-        });
-    }
+    const lr = document.getElementById('list-riwayat'); lr.innerHTML = riwayat.length === 0 ? '<p class="font-bold p-2">BELUM ADA TRANSAKSI</p>' : '';
+    riwayat.forEach(r => { const color = r.jenis === 'masuk' ? 'bg-[#a3e635]' : 'bg-red-400'; lr.innerHTML += `<li class="flex flex-col md:flex-row justify-between md:items-center p-3 border-b-4 border-black gap-3"><div><p class="font-black text-lg uppercase">${r.ket}</p><p class="text-xs font-bold mt-2">${r.tanggal} <span class="px-2 border-2 border-black bg-[#f0f0f0] ml-2">${r.dompet.toUpperCase()}</span></p></div><span class="${color} font-black text-lg px-3 py-1 border-4 border-black">${r.jenis === 'masuk'?'+':'-'} ${formatRupiah(r.nominal)}</span></li>`; });
 
-    // 3. Update Tugas
-    const listTugas = document.getElementById('list-tugas');
-    listTugas.innerHTML = '';
-    if(tugas.length === 0) listTugas.innerHTML = '<p class="text-slate-400 text-sm italic text-center py-4">Belum ada tugas.</p>';
-    tugas.forEach((t, i) => {
-        listTugas.innerHTML += `
-            <li class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-teal-200 transition">
-                <label class="flex items-center gap-3 cursor-pointer flex-1">
-                    <input type="checkbox" ${t.selesai ? 'checked' : ''} onchange="toggleTugas(${i})" class="w-5 h-5 accent-teal-600 rounded cursor-pointer">
-                    <span class="font-medium ${t.selesai ? 'task-done' : 'text-slate-700'}">${t.judul}</span>
-                </label>
-                <button onclick="hapusTugas(${i})" class="text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-2 rounded-lg transition ml-4"><i class="fa-solid fa-trash"></i></button>
-            </li>
-        `;
-    });
+    const lt = document.getElementById('list-tugas'); lt.innerHTML = tugas.length === 0 ? '<p class="font-bold">Data Kosong</p>' : '';
+    tugas.forEach((t, i) => { const d = new Date(t.deadline).toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'}); const l = t.status === "Selesai";
+        lt.innerHTML += `<div class="neubrutalism-card ${l?"bg-gray-300":"bg-white"} p-4 border-4 border-black"><div class="border-b-4 border-black pb-3 mb-3"><span class="bg-black text-white text-xs px-2 py-1 font-bold uppercase mb-2 inline-block">${t.tipe}</span><h4 class="font-black text-xl uppercase truncate ${l?'line-through':''}">${t.namaTugas}</h4><p class="font-bold text-sm mt-1">${t.matkul}</p></div><p class="font-bold mb-5 text-sm">DUE: <span class="bg-[#ffc900] px-2 border-2 border-black ml-1">${d}</span></p>${!l ? `<button onclick="selesaikanTugas(${i})" class="neubrutalism-btn w-full bg-[#ff90e8] mb-3 text-black py-3">SUDAH SELESAI</button>` : `<p class="font-black text-green-800 mb-3 uppercase text-center border-4 border-green-800 py-2">✓ BERHENTI</p>`}<button onclick="hapusTugasLokal(${i})" class="w-full font-bold underline text-xs hover:text-red-600 mt-2">Hapus Data Lokal</button></div>`; });
 
-    // 4. Update Tagihan (Updated)
-    const listCicilan = document.getElementById('list-cicilan');
-    listCicilan.innerHTML = '';
-    if(cicilan.length === 0) listCicilan.innerHTML = '<p class="text-slate-400 text-sm italic py-2">Belum ada tagihan dicatat.</p>';
-    
-    cicilan.forEach((c, i) => {
-        // Mencegah error jika data lama masih tersimpan
-        if(!c.tanggalFull) {
-            c.tanggalFull = new Date().toISOString().split('T')[0];
-            c.jumlah = c.jumlah || 0;
-        }
+    const lc = document.getElementById('list-cicilan'); lc.innerHTML = cicilan.length === 0 ? '<p class="font-bold">Data Kosong</p>' : '';
+    cicilan.forEach((c, i) => { const d = new Date(c.tanggalFull).toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'}); const l = c.status === "Lunas";
+        lc.innerHTML += `<div class="neubrutalism-card ${l?"bg-gray-300":"bg-white"} p-4"><div class="flex flex-col border-b-4 border-black pb-3 mb-3 gap-2"><h4 class="font-black text-xl uppercase truncate ${l?'line-through':''}">${c.nama}</h4><span class="font-black text-lg">${formatRupiah(c.jumlah)}</span></div><p class="font-bold mb-5 text-sm">DUE: <span class="bg-[#ffc900] px-2 border-2 border-black ml-1">${d}</span></p>${!l ? `<button onclick="bayarTagihan(${i})" class="neubrutalism-btn w-full bg-[#38bdf8] mb-3 text-black py-3">SUDAH BAYAR</button>` : `<p class="font-black text-green-800 mb-3 uppercase text-center border-4 border-green-800 py-2">✓ BERHENTI</p>`}<button onclick="hapusCicilanLokal(${i})" class="w-full font-bold underline text-xs hover:text-red-600 mt-2">Hapus Data Lokal</button></div>`; });
 
-        const dateObj = new Date(c.tanggalFull);
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        const tanggalTampil = dateObj.toLocaleDateString('id-ID', options);
-        const jumlahTampil = formatRupiah(c.jumlah);
-
-        listCicilan.innerHTML += `
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm relative overflow-hidden group">
-                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-400"></div>
-                <div class="pl-2 flex-1">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-bold text-slate-800 text-lg">${c.nama}</h4>
-                        <span class="font-bold text-rose-600">${jumlahTampil}</span>
-                    </div>
-                    <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar text-slate-400"></i> Jatuh Tempo: <span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-bold ml-1 border border-slate-200">${tanggalTampil}</span></p>
-                </div>
-                <button onclick="hapusCicilan(${i})" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-3 rounded-xl transition opacity-100 md:opacity-0 group-hover:opacity-100 ml-4"><i class="fa-solid fa-trash"></i></button>
-            </div>
-        `;
-    });
-
-    // 5. Update Akun Penting
-    const listAkun = document.getElementById('list-akun');
-    listAkun.innerHTML = '';
-    if(akunPenting.length === 0) listAkun.innerHTML = '<p class="text-slate-400 text-sm italic py-2">Belum ada data akun disimpan.</p>';
-    akunPenting.forEach((a, i) => {
-        listAkun.innerHTML += `
-            <div class="flex justify-between items-center bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                <div>
-                    <p class="text-xs text-rose-600 font-bold mb-2 tracking-wider"><i class="fa-brands fa-${a.platform.toLowerCase()}"></i> ${a.platform.toUpperCase()}</p>
-                    <p class="text-sm font-semibold text-slate-800 mb-1"><i class="fa-regular fa-user text-slate-400 w-4"></i> ${a.user}</p>
-                    <p class="text-sm text-slate-600"><i class="fa-solid fa-key text-slate-400 w-4"></i> <span class="font-mono bg-slate-200 px-2 py-0.5 rounded text-slate-800 tracking-wider font-bold">${a.pass}</span></p>
-                </div>
-                <button onclick="hapusAkun(${i})" class="text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-3 rounded-xl transition"><i class="fa-solid fa-trash text-lg"></i></button>
-            </div>
-        `;
-    });
+    const la = document.getElementById('list-akun'); la.innerHTML = akunPenting.length === 0 ? '<p class="font-bold">Aman, Belum ada akun disimpan.</p>' : '';
+    akunPenting.forEach((a, i) => { la.innerHTML += `<div class="flex justify-between items-center bg-[#ffc900] p-4 border-4 border-black"><div class="overflow-hidden mr-3"><p class="font-black uppercase bg-black text-white px-2 inline-block mb-2 text-xs">${a.platform}</p><p class="font-bold text-sm truncate"><i class="fa-solid fa-user"></i> ${a.user}</p><p class="font-bold mt-2 text-sm truncate flex items-center gap-2"><i class="fa-solid fa-key"></i> <span class="bg-white px-2 py-1 border-2 border-black tracking-widest block truncate">${a.pass}</span></p></div><button onclick="hapusAkun(${i})" class="bg-red-400 p-3 border-4 border-black hover:bg-white flex-shrink-0"><i class="fa-solid fa-trash text-lg"></i></button></div>`; });
 }
-
-// Initial Render
 updateUI();
