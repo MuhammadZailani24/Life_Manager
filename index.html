@@ -8,9 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#f0f0f0] text-black font-sans h-screen flex overflow-hidden selection:bg-pink-400 selection:text-white">
+<body class="bg-[#f0f0f0] text-black font-sans min-h-screen lg:h-screen flex flex-col lg:flex-row lg:overflow-hidden selection:bg-pink-400 selection:text-white">
 
-    <!-- Sidebar (Desktop Saja) -->
     <aside id="sidebar" class="hidden lg:flex w-72 bg-white border-r-8 border-black flex-col justify-between h-full z-50 flex-shrink-0">
         <div>
             <div class="p-6 text-center border-b-8 border-black bg-[#ff90e8]">
@@ -18,100 +17,195 @@
                 <p class="font-bold mt-2"><i class="fa-solid fa-cube text-xl"></i> Desktop Mode</p>
             </div>
             <nav class="mt-8 flex flex-col gap-5 px-6">
-                <button onclick="nav('dashboard')" class="nav-btn neubrutalism-btn bg-white" id="btn-dashboard"><i class="fa-solid fa-chart-pie w-6"></i> Dashboard</button>
-                <button onclick="nav('transaksi')" class="nav-btn neubrutalism-btn bg-white" id="btn-transaksi"><i class="fa-solid fa-money-bill-wave w-6"></i> Catat Transaksi</button>
-                <button onclick="nav('tugas')" class="nav-btn neubrutalism-btn bg-white" id="btn-tugas"><i class="fa-solid fa-thumbtack w-6"></i> Tugas Kuliah</button>
-                <button onclick="nav('cicilan')" class="nav-btn neubrutalism-btn bg-[#a3e635]" id="btn-cicilan"><i class="fa-solid fa-envelope-open-text w-6"></i> Tagihan & Email</button>
-                <button onclick="checkPasswordAndNav()" class="nav-btn neubrutalism-btn bg-red-400 text-black mt-8" id="btn-akun"><i class="fa-solid fa-lock w-6"></i> Akun Penting</button>
+                <button onclick="nav('dashboard')" class="nav-btn neubrutalism-btn bg-white" id="btn-dashboard">
+                    <i class="fa-solid fa-chart-pie w-6"></i> Dashboard
+                </button>
+                <button onclick="nav('transaksi')" class="nav-btn neubrutalism-btn bg-white" id="btn-transaksi">
+                    <i class="fa-solid fa-money-bill-wave w-6"></i> Catat Transaksi
+                </button>
+                <button onclick="nav('tugas')" class="nav-btn neubrutalism-btn bg-white" id="btn-tugas">
+                    <i class="fa-solid fa-thumbtack w-6"></i> Tugas Kuliah
+                </button>
+                <button onclick="nav('cicilan')" class="nav-btn neubrutalism-btn bg-[#a3e635]" id="btn-cicilan">
+                    <i class="fa-solid fa-envelope-open-text w-6"></i> Tagihan & Email
+                </button>
+                <button onclick="checkPasswordAndNav()" class="nav-btn neubrutalism-btn bg-red-400 text-black mt-8" id="btn-akun">
+                    <i class="fa-solid fa-lock w-6"></i> Akun Penting
+                </button>
             </nav>
         </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-[#38bdf8] bg-dots relative z-10 w-full h-full">
+    <main class="flex-1 p-4 md:p-8 lg:overflow-y-auto bg-[#38bdf8] bg-dots relative z-10 w-full">
         
-        <!-- SECTION: Dashboard -->
         <section id="sec-dashboard" class="content-section block animate-fade-in">
+            
             <div class="lg:hidden mb-6 flex justify-between items-center bg-[#ff90e8] p-4 border-4 border-black shadow-[4px_4px_0_0_#000]">
                 <h1 class="text-2xl font-black uppercase tracking-widest text-black">LIFE MGR</h1>
                 <i class="fa-solid fa-cube text-3xl"></i>
             </div>
 
-            <!-- Menu Mobile Grid -->
             <div class="lg:hidden mb-8">
-                <h3 class="text-xl font-black mb-4 bg-white inline-block px-3 py-1 border-4 border-black shadow-[4px_4px_0_0_#000]">AKSES CEPAT</h3>
+                <h3 class="text-xl md:text-2xl font-black mb-4 bg-white inline-block px-3 py-1 border-4 border-black shadow-[4px_4px_0_0_#000]">AKSES CEPAT</h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <button onclick="nav('transaksi')" class="neubrutalism-card bg-white hover:bg-gray-100 flex flex-col items-center gap-3 p-4"><i class="fa-solid fa-money-bill-wave text-4xl text-green-500"></i><span class="font-black uppercase text-sm">Transaksi</span></button>
-                    <button onclick="nav('tugas')" class="neubrutalism-card bg-[#ff90e8] hover:bg-[#ff7be2] flex flex-col items-center gap-3 p-4"><i class="fa-solid fa-thumbtack text-4xl text-black"></i><span class="font-black uppercase text-sm">Tugas Kuliah</span></button>
-                    <button onclick="nav('cicilan')" class="neubrutalism-card bg-[#a3e635] hover:bg-[#8fcc2e] flex flex-col items-center gap-3 p-4"><i class="fa-solid fa-envelope-open-text text-4xl text-black"></i><span class="font-black uppercase text-sm">Tagihan</span></button>
-                    <button onclick="checkPasswordAndNav()" class="neubrutalism-card bg-red-400 hover:bg-red-500 flex flex-col items-center gap-3 p-4"><i class="fa-solid fa-lock text-4xl text-black"></i><span class="font-black uppercase text-sm">Akun Rahasia</span></button>
+                    <button onclick="nav('transaksi')" class="neubrutalism-card bg-white hover:bg-gray-100 flex flex-col items-center justify-center text-center gap-3 p-4">
+                        <i class="fa-solid fa-money-bill-wave text-4xl text-green-500"></i>
+                        <span class="font-black uppercase text-sm">Transaksi</span>
+                    </button>
+                    <button onclick="nav('tugas')" class="neubrutalism-card bg-[#ff90e8] hover:bg-[#ff7be2] flex flex-col items-center justify-center text-center gap-3 p-4">
+                        <i class="fa-solid fa-thumbtack text-4xl text-black"></i>
+                        <span class="font-black uppercase text-sm">Tugas Kuliah</span>
+                    </button>
+                    <button onclick="nav('cicilan')" class="neubrutalism-card bg-[#a3e635] hover:bg-[#8fcc2e] flex flex-col items-center justify-center text-center gap-3 p-4">
+                        <i class="fa-solid fa-envelope-open-text text-4xl text-black"></i>
+                        <span class="font-black uppercase text-sm">Tagihan</span>
+                    </button>
+                    <button onclick="checkPasswordAndNav()" class="neubrutalism-card bg-red-400 hover:bg-red-500 flex flex-col items-center justify-center text-center gap-3 p-4">
+                        <i class="fa-solid fa-lock text-4xl text-black"></i>
+                        <span class="font-black uppercase text-sm">Akun Rahasia</span>
+                    </button>
                 </div>
             </div>
 
-            <h2 class="text-3xl font-black mb-6 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">RINGKASAN</h2>
+            <h2 class="text-3xl md:text-4xl font-black mb-6 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">RINGKASAN</h2>
+            
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
-                <div class="neubrutalism-card bg-[#ffc900] p-4"><h3 class="text-black text-xs font-bold uppercase mb-2">Cash</h3><p class="text-xl font-black truncate" id="saldo-cash">Rp 0</p></div>
-                <div class="neubrutalism-card bg-[#ff90e8] p-4"><h3 class="text-black text-xs font-bold uppercase mb-2">Saldo ATM</h3><p class="text-xl font-black truncate" id="saldo-atm">Rp 0</p></div>
-                <div class="neubrutalism-card bg-white p-4"><h3 class="text-black text-xs font-bold uppercase mb-2">Tugas Aktif</h3><p class="text-3xl font-black" id="jumlah-tugas">0</p></div>
-                <div class="neubrutalism-card bg-red-400 p-4"><h3 class="text-black text-xs font-bold uppercase mb-2">Tagihan Aktif</h3><p class="text-3xl font-black" id="jumlah-cicilan">0</p></div>
+                <div class="neubrutalism-card bg-[#ffc900] p-4 md:p-6">
+                    <h3 class="text-black text-xs md:text-sm font-bold uppercase mb-2">Cash</h3>
+                    <p class="text-xl md:text-3xl font-black truncate" id="saldo-cash">Rp 0</p>
+                </div>
+                <div class="neubrutalism-card bg-[#ff90e8] p-4 md:p-6">
+                    <h3 class="text-black text-xs md:text-sm font-bold uppercase mb-2">Saldo ATM</h3>
+                    <p class="text-xl md:text-3xl font-black truncate" id="saldo-atm">Rp 0</p>
+                </div>
+                <div class="neubrutalism-card bg-white p-4 md:p-6">
+                    <h3 class="text-black text-xs md:text-sm font-bold uppercase mb-2">Tugas Aktif</h3>
+                    <p class="text-3xl font-black" id="jumlah-tugas">0</p>
+                </div>
+                <div class="neubrutalism-card bg-red-400 p-4 md:p-6">
+                    <h3 class="text-black text-xs md:text-sm font-bold uppercase mb-2">Tagihan Aktif</h3>
+                    <p class="text-3xl font-black" id="jumlah-cicilan">0</p>
+                </div>
             </div>
-            <h3 class="text-xl font-black mb-4 bg-white inline-block px-3 py-1 border-4 border-black">Riwayat Terakhir</h3>
-            <div class="neubrutalism-card bg-white w-full p-2 md:p-6"><ul id="list-riwayat" class="space-y-4"></ul></div>
+
+            <h3 class="text-xl md:text-2xl font-black mb-4 bg-white inline-block px-3 py-1 border-4 border-black">Riwayat Terakhir</h3>
+            <div class="neubrutalism-card bg-white w-full p-2 md:p-6">
+                <ul id="list-riwayat" class="space-y-4"></ul>
+            </div>
         </section>
 
-        <!-- SECTION: Transaksi -->
         <section id="sec-transaksi" class="content-section hidden animate-fade-in">
             <button onclick="nav('dashboard')" class="lg:hidden neubrutalism-btn bg-[#ffc900] mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> KEMBALI</button>
-            <h2 class="text-3xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TRANSAKSI</h2>
+            <h2 class="text-3xl md:text-4xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TRANSAKSI</h2>
             <form id="form-transaksi" class="neubrutalism-card bg-white max-w-3xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div><label class="block font-bold mb-2">Jenis</label><select id="jenis-trx" class="neubrutalism-input bg-[#a3e635]"><option value="masuk">Pemasukan (+)</option><option value="keluar">Pengeluaran (-)</option></select></div>
-                    <div><label class="block font-bold mb-2">Dompet</label><select id="dompet-trx" class="neubrutalism-input bg-yellow-200"><option value="cash">Cash</option><option value="atm">Saldo ATM</option></select></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+                    <div>
+                        <label class="block font-bold mb-2">Jenis</label>
+                        <select id="jenis-trx" class="neubrutalism-input bg-[#a3e635]">
+                            <option value="masuk">Pemasukan (+)</option>
+                            <option value="keluar">Pengeluaran (-)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-2">Dompet</label>
+                        <select id="dompet-trx" class="neubrutalism-input bg-yellow-200">
+                            <option value="cash">Cash</option>
+                            <option value="atm">Saldo ATM</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mb-6"><label class="block font-bold mb-2">Nominal (Rp)</label><input type="number" id="nominal-trx" class="neubrutalism-input bg-white" required></div>
-                <div class="mb-8"><label class="block font-bold mb-2">Keterangan</label><input type="text" id="ket-trx" class="neubrutalism-input bg-white" placeholder="Makan, Beli Baju..." required></div>
-                <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl">SIMPAN TRANSAKSI</button>
+                <div class="mb-6">
+                    <label class="block font-bold mb-2">Nominal (Rp)</label>
+                    <input type="number" id="nominal-trx" class="neubrutalism-input bg-white" required>
+                </div>
+                <div class="mb-8">
+                    <label class="block font-bold mb-2">Keterangan</label>
+                    <input type="text" id="ket-trx" class="neubrutalism-input bg-white" placeholder="Makan, Beli Baju, Gaji..." required>
+                </div>
+                <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl hover:bg-gray-800">SIMPAN TRANSAKSI</button>
             </form>
         </section>
 
-        <!-- SECTION: Tugas Kuliah -->
         <section id="sec-tugas" class="content-section hidden animate-fade-in">
             <button onclick="nav('dashboard')" class="lg:hidden neubrutalism-btn bg-[#ffc900] mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> KEMBALI</button>
-            <h2 class="text-3xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TUGAS KULIAH</h2>
-            <form id="form-tugas" class="neubrutalism-card bg-[#ff90e8] mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                <div><label class="block font-bold mb-2">Judul Tugas</label><input type="text" id="nama-tugas" class="neubrutalism-input bg-white" required></div>
-                <div><label class="block font-bold mb-2">Mata Kuliah</label><input type="text" id="matkul-tugas" class="neubrutalism-input bg-white" required></div>
-                <div><label class="block font-bold mb-2">Tipe</label><select id="tipe-tugas" class="neubrutalism-input bg-white"><option>Individu</option><option>Kelompok</option></select></div>
-                <div><label class="block font-bold mb-2">Deadline</label><input type="date" id="deadline-tugas" class="neubrutalism-input bg-white" required></div>
-                <div class="md:col-span-2"><label class="block font-bold mb-2">Email Notif</label><input type="email" id="email-tugas" class="neubrutalism-input bg-white" required></div>
-                <div class="md:col-span-2 mt-2"><button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl" id="btn-submit-tugas">SIMPAN TUGAS & ALARM</button></div>
+            <h2 class="text-3xl md:text-4xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TUGAS KULIAH</h2>
+            <div class="mb-6 px-4 py-3 bg-black text-white font-bold border-4 border-white inline-block text-sm md:text-base">
+                <i class="fa-solid fa-bell text-yellow-400"></i> Sistem mengirim email peringatan Deadline H-3 & per jam di hari H!
+            </div>
+            
+            <form id="form-tugas" class="neubrutalism-card bg-[#ff90e8] mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4 md:p-6">
+                <div>
+                    <label class="block font-bold mb-2">Judul Tugas</label>
+                    <input type="text" id="nama-tugas" class="neubrutalism-input bg-white" placeholder="Contoh: Bikin Web CRUD" required>
+                </div>
+                <div>
+                    <label class="block font-bold mb-2">Mata Kuliah</label>
+                    <input type="text" id="matkul-tugas" class="neubrutalism-input bg-white" placeholder="Pemrograman Web" required>
+                </div>
+                <div>
+                    <label class="block font-bold mb-2">Tipe Tugas</label>
+                    <select id="tipe-tugas" class="neubrutalism-input bg-white">
+                        <option value="Individu">Individu</option>
+                        <option value="Kelompok">Kelompok</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold mb-2">Deadline (Tgl)</label>
+                    <input type="date" id="deadline-tugas" class="neubrutalism-input bg-white" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block font-bold mb-2">Email Penerima Notif</label>
+                    <input type="email" id="email-tugas" class="neubrutalism-input bg-white" placeholder="email.kamu@gmail.com" required>
+                </div>
+                <div class="md:col-span-2 mt-2">
+                    <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl" id="btn-submit-tugas">SIMPAN TUGAS & ALARM</button>
+                </div>
             </form>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-tugas"></div>
         </section>
 
-        <!-- SECTION: Tagihan -->
         <section id="sec-cicilan" class="content-section hidden animate-fade-in">
             <button onclick="nav('dashboard')" class="lg:hidden neubrutalism-btn bg-[#ffc900] mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> KEMBALI</button>
-            <h2 class="text-3xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TAGIHAN & EMAIL</h2>
-            <form id="form-cicilan" class="neubrutalism-card bg-[#a3e635] mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                <div><label class="block font-bold mb-2">Nama Tagihan</label><input type="text" id="nama-tagihan" class="neubrutalism-input bg-white" required></div>
-                <div><label class="block font-bold mb-2">Jumlah (Rp)</label><input type="number" id="jumlah-tagihan" class="neubrutalism-input bg-white" required></div>
-                <div><label class="block font-bold mb-2">Jatuh Tempo</label><input type="date" id="tgl-jatuh-tempo" class="neubrutalism-input bg-white" required></div>
-                <div><label class="block font-bold mb-2">Email Notif</label><input type="email" id="email-tagihan" class="neubrutalism-input bg-white" required></div>
-                <div class="md:col-span-2 mt-2"><button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl" id="btn-submit-tagihan">SIMPAN TAGIHAN & ALARM</button></div>
+            <h2 class="text-3xl md:text-4xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TAGIHAN & EMAIL</h2>
+            <div class="mb-6 px-4 py-3 bg-black text-white font-bold border-4 border-white inline-block text-sm md:text-base">
+                <i class="fa-solid fa-bell text-yellow-400"></i> Sistem akan mengirim email peringatan H-3 & per jam pada hari H!
+            </div>
+            
+            <form id="form-cicilan" class="neubrutalism-card bg-[#a3e635] mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4 md:p-6">
+                <div>
+                    <label class="block font-bold mb-2">Nama Tagihan</label>
+                    <input type="text" id="nama-tagihan" class="neubrutalism-input bg-white" placeholder="WiFi, Kost, UKT..." required>
+                </div>
+                <div>
+                    <label class="block font-bold mb-2">Jumlah Tagihan (Rp)</label>
+                    <input type="number" id="jumlah-tagihan" class="neubrutalism-input bg-white" required>
+                </div>
+                <div>
+                    <label class="block font-bold mb-2">Jatuh Tempo (Tgl)</label>
+                    <input type="date" id="tgl-jatuh-tempo" class="neubrutalism-input bg-white" required>
+                </div>
+                <div>
+                    <label class="block font-bold mb-2">Email Penerima Notif</label>
+                    <input type="email" id="email-tagihan" class="neubrutalism-input bg-white" placeholder="email.kamu@gmail.com" required>
+                </div>
+                <div class="md:col-span-2 mt-2">
+                    <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl" id="btn-submit-tagihan">SIMPAN TAGIHAN & ALARM</button>
+                </div>
             </form>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-cicilan"></div>
         </section>
 
-        <!-- SECTION: Akun Penting -->
         <section id="sec-akun" class="content-section hidden animate-fade-in">
             <button onclick="nav('dashboard')" class="lg:hidden neubrutalism-btn bg-[#ffc900] mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> KEMBALI</button>
-            <div class="flex justify-between mb-8 gap-4 items-center">
-                <h2 class="text-3xl font-black bg-red-400 text-black px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">AKUN RAHASIA</h2>
-                <button onclick="lockAccounts()" class="neubrutalism-btn bg-black text-white px-6"><i class="fa-solid fa-lock"></i> KUNCI</button>
+            <div class="flex flex-col md:flex-row justify-between mb-8 gap-4 items-start md:items-center">
+                <h2 class="text-3xl md:text-4xl font-black bg-red-400 text-black inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">AKUN RAHASIA</h2>
+                <button onclick="lockAccounts()" class="neubrutalism-btn bg-black text-white px-6 w-full md:w-auto"><i class="fa-solid fa-lock"></i> KUNCI AKUN</button>
             </div>
-            <form id="form-akun" class="neubrutalism-card bg-white mb-8 flex flex-col md:flex-row gap-4 p-4">
-                <input type="text" id="platform-akun" class="neubrutalism-input flex-1" placeholder="Platform" required>
+            
+            <form id="form-akun" class="neubrutalism-card bg-white mb-8 flex flex-col md:flex-row gap-4 p-4 md:p-6">
+                <input type="text" id="platform-akun" class="neubrutalism-input flex-1" placeholder="Platform (Ex: IG)" required>
                 <input type="text" id="user-akun" class="neubrutalism-input flex-1" placeholder="Username" required>
                 <input type="text" id="pass-akun" class="neubrutalism-input flex-1" placeholder="Password" required>
                 <button type="submit" class="neubrutalism-btn bg-red-400 px-8 py-4">SIMPAN</button>
@@ -120,17 +214,17 @@
         </section>
     </main>
 
-    <!-- Modal PIN -->
     <div id="password-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-[100] p-4">
-        <div class="bg-white border-8 border-black p-6 max-w-sm w-full shadow-[8px_8px_0_0_#ff90e8]">
-            <h3 class="text-2xl font-black mb-4 uppercase text-center border-b-4 border-black pb-4">Akses PIN</h3>
+        <div class="bg-white border-8 border-black p-6 md:p-8 max-w-sm w-full shadow-[8px_8px_0_0_#ff90e8] md:shadow-[12px_12px_0_0_#ff90e8]">
+            <h3 class="text-2xl md:text-3xl font-black mb-4 uppercase text-center border-b-4 border-black pb-4">Akses PIN</h3>
             <input type="password" id="input-password" class="neubrutalism-input w-full text-center text-3xl tracking-widest mb-6" placeholder="••••">
             <div class="flex gap-4">
-                <button onclick="closeModal()" class="neubrutalism-btn flex-1 bg-[#ffc900]">BATAL</button>
-                <button onclick="verifyPassword()" class="neubrutalism-btn flex-1 bg-black text-white">BUKA</button>
+                <button onclick="closeModal()" class="neubrutalism-btn flex-1 bg-[#ffc900] py-3 text-sm md:text-base">BATAL</button>
+                <button onclick="verifyPassword()" class="neubrutalism-btn flex-1 bg-black text-white py-3 text-sm md:text-base">BUKA</button>
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
