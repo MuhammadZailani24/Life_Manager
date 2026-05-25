@@ -24,11 +24,11 @@ if(lastDate !== todayStr) {
     simpanData();
 }
 
-// Jam Real-time
+// Jam Real-time (Zona Waktu Perangkat Lokal)
 setInterval(() => {
     const now = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    document.getElementById('live-clock').innerText = now.toLocaleDateString('id-ID', options);
+    document.getElementById('live-clock').innerText = now.toLocaleDateString('id-ID', options) + " WITA";
 }, 1000);
 
 // Hamburger Logic
@@ -53,17 +53,19 @@ function nav(sectionId) {
 
 function formatRupiah(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka); }
 
-// --- TOAST NOTIFICATION (POP UP) ---
+// --- TOAST NOTIFICATION (POP UP ANTI-GAGAL) ---
 let toastTimeout;
 function showToast(pesan, isError = false) {
     const toast = document.getElementById('toast-notif');
-    
-    // Ubah warna kalau error
-    if(isError) {
-        toast.classList.replace('bg-[#a3e635]', 'bg-red-400');
+    if(!toast) return;
+
+    if (isError) {
+        toast.classList.remove('bg-[#a3e635]');
+        toast.classList.add('bg-red-400');
         toast.innerHTML = `<i class="fa-solid fa-circle-xmark text-2xl text-black"></i><span id="toast-msg" class="font-black uppercase text-sm md:text-base tracking-wide">${pesan}</span>`;
     } else {
-        toast.classList.replace('bg-red-400', 'bg-[#a3e635]');
+        toast.classList.remove('bg-red-400');
+        toast.classList.add('bg-[#a3e635]');
         toast.innerHTML = `<i class="fa-solid fa-circle-check text-2xl text-black"></i><span id="toast-msg" class="font-black uppercase text-sm md:text-base tracking-wide">${pesan}</span>`;
     }
 
@@ -75,27 +77,25 @@ function showToast(pesan, isError = false) {
     }, 3000);
 }
 
-// --- API SENDER DENGAN POP UP SUPER KILAT (FIRE & FORGET) ---
+// --- API SENDER DENGAN POP UP SUPER KILAT (Optimistic UI) ---
 function sendToBackend(payload, btnElement, loadingText, defaultText, successMessage) {
     btnElement.innerText = loadingText; 
     btnElement.disabled = true;
 
-    // Tembak ke Google Scripts secara background tanpa ditunggu (Optimistic Update)
     fetch(GAS_URL, { 
         method: 'POST', 
         mode: 'no-cors', 
         body: JSON.stringify(payload), 
         headers: { 'Content-Type': 'application/json' } 
     }).catch(err => { 
-        console.error("Fetch Background Error:", err); 
+        console.error("Fetch Error:", err); 
         showToast("Terjadi gangguan jaringan lokal!", true);
     });
 
-    // Manipulasi UI agar terasa sangat cepat. Beri jeda 0.8 detik saja untuk kesan "proses"
     setTimeout(() => {
         btnElement.innerText = defaultText; 
         btnElement.disabled = false;
-        showToast(successMessage);
+        if(successMessage) showToast(successMessage);
     }, 800); 
 }
 
@@ -130,15 +130,52 @@ document.getElementById('form-bisnis').addEventListener('submit', function(e) {
     showToast("Transaksi Agen Disimpan!");
 });
 
-function downloadLaporan(tipe) {
-    let csv = "Tanggal,Jenis,Keterangan,Nominal,Admin,MasukDompet\n";
-    bisnis.riwayat.forEach(r => { csv += `${r.tanggal},${r.jenis},${r.ket},${r.nominal},${r.admin},${r.dompet}\n`; });
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `Laporan_Agen_${tipe}.csv`);
-    a.click();
+// --- EXPORT PDF MANDIRI LINK ---
+function downloadLaporanPDF(tipe) {
+    if (bisnis.riwayat.length === 0) {
+        showToast("Belum ada data untuk di-download!", true);
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Header PDF
+    doc.setFontSize(18);
+    doc.text(`LAPORAN MANDIRI LINK PRO - ${tipe.toUpperCase()}`, 14, 20);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')} WITA`, 14, 28);
+    
+    // Setup Tabel HTML ke PDF
+    const tableColumn = ["Tanggal", "Jenis Trx", "Keterangan", "Nominal", "Laba/Admin", "Dompet Masuk"];
+    const tableRows = [];
+    
+    bisnis.riwayat.forEach(r => {
+        const rowData = [
+            r.tanggal,
+            r.jenis,
+            r.ket,
+            formatRupiah(r.nominal),
+            formatRupiah(r.admin),
+            r.dompet
+        ];
+        tableRows.push(rowData);
+    });
+    
+    // Build Tabel AutoTable
+    doc.autoTable({
+        startY: 35,
+        head: [tableColumn],
+        body: tableRows,
+        theme: 'grid',
+        headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [240, 240, 240] },
+        styles: { fontSize: 9 }
+    });
+    
+    doc.save(`Laporan_Agen_${tipe}.pdf`);
+    showToast(`PDF Laporan ${tipe} Berhasil Diunduh!`);
 }
 
 // --- JOKI KILAT ---
