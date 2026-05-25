@@ -3,209 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Manager</title>
+    <title>Life Manager Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#f0f0f0] text-black font-sans min-h-screen lg:h-screen flex flex-col lg:flex-row lg:overflow-hidden selection:bg-pink-400 selection:text-white">
+<body class="bg-[#f0f0f0] text-black font-sans min-h-screen flex selection:bg-pink-400 selection:text-white">
 
-    <aside id="sidebar" class="hidden lg:flex w-72 bg-white border-r-8 border-black flex-col justify-between h-full z-50 flex-shrink-0">
-        <div>
-            <div class="p-6 text-center border-b-8 border-black bg-[#ff90e8]">
-                <h1 class="text-4xl font-black uppercase tracking-widest text-black shadow-text">LIFE MGR</h1>
-                <p class="font-bold mt-2"><i class="fa-solid fa-cube text-xl"></i> Desktop Mode</p>
-            </div>
-            <nav class="mt-8 flex flex-col gap-5 px-6">
-                <button onclick="nav('dashboard')" class="nav-btn neubrutalism-btn bg-white" id="btn-dashboard">
-                    <i class="fa-solid fa-chart-pie w-6"></i> Dashboard
-                </button>
-                <button onclick="nav('transaksi')" class="nav-btn neubrutalism-btn bg-white" id="btn-transaksi">
-                    <i class="fa-solid fa-money-bill-wave w-6"></i> Catat Transaksi
-                </button>
-                <button onclick="nav('tugas')" class="nav-btn neubrutalism-btn bg-white" id="btn-tugas">
-                    <i class="fa-solid fa-thumbtack w-6"></i> Tugas Kuliah
-                </button>
-                <button onclick="nav('cicilan')" class="nav-btn neubrutalism-btn bg-[#a3e635]" id="btn-cicilan">
-                    <i class="fa-solid fa-envelope-open-text w-6"></i> Tagihan & Email
-                </button>
-                <button onclick="checkPasswordAndNav()" class="nav-btn neubrutalism-btn bg-red-400 text-black mt-8" id="btn-akun">
-                    <i class="fa-solid fa-lock w-6"></i> Akun Penting
-                </button>
-            </nav>
+    <div class="lg:hidden fixed w-full bg-[#ff90e8] border-b-8 border-black z-40 flex justify-between items-center p-4">
+        <h1 class="text-2xl font-black uppercase tracking-widest text-black shadow-text">LIFE MGR</h1>
+        <button id="btn-hamburger" class="text-black focus:outline-none"><i class="fa-solid fa-bars text-4xl"></i></button>
+    </div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 z-40 hidden lg:hidden"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out z-50 w-72 bg-white border-r-8 border-black flex flex-col h-full overflow-y-auto">
+        <div class="p-6 text-center border-b-8 border-black bg-[#ff90e8] hidden lg:block">
+            <h1 class="text-4xl font-black uppercase tracking-widest text-black shadow-text">LIFE MGR</h1>
+            <p class="font-bold mt-2"><i class="fa-solid fa-bolt text-xl"></i> Bos Zailani</p>
         </div>
+        <div class="p-4 lg:hidden flex justify-end border-b-8 border-black bg-[#ff90e8]">
+            <button id="btn-close-sidebar" class="text-black"><i class="fa-solid fa-xmark text-4xl"></i></button>
+        </div>
+        <nav class="p-6 flex flex-col gap-4 flex-1">
+            <button onclick="nav('dashboard')" class="nav-btn neubrutalism-btn bg-white w-full text-left active-nav" id="btn-dashboard"><i class="fa-solid fa-chart-pie w-6"></i> Dashboard</button>
+            <button onclick="nav('transaksi')" class="nav-btn neubrutalism-btn bg-white w-full text-left" id="btn-transaksi"><i class="fa-solid fa-wallet w-6"></i> Keuangan Pribadi</button>
+            <button onclick="nav('bisnis')" class="nav-btn neubrutalism-btn bg-[#a3e635] w-full text-left" id="btn-bisnis"><i class="fa-solid fa-store w-6"></i> Mandiri Link PRO</button>
+            <button onclick="nav('joki')" class="nav-btn neubrutalism-btn bg-[#ffc900] w-full text-left" id="btn-joki"><i class="fa-solid fa-keyboard w-6"></i> Joki Kilat</button>
+            <button onclick="nav('tugas')" class="nav-btn neubrutalism-btn bg-white w-full text-left" id="btn-tugas"><i class="fa-solid fa-book w-6"></i> Tugas Kuliah</button>
+            <button onclick="nav('cicilan')" class="nav-btn neubrutalism-btn bg-white w-full text-left" id="btn-cicilan"><i class="fa-solid fa-envelope-open-text w-6"></i> Tagihan Pribadi</button>
+            <button onclick="checkPasswordAndNav()" class="nav-btn neubrutalism-btn bg-red-400 text-black mt-auto w-full text-left" id="btn-akun"><i class="fa-solid fa-lock w-6"></i> Akun Rahasia</button>
+        </nav>
     </aside>
 
-    <main class="flex-1 p-4 md:p-8 lg:overflow-y-auto bg-[#38bdf8] bg-dots relative z-10 w-full">
+    <main class="flex-1 p-4 md:p-8 lg:overflow-y-auto bg-[#38bdf8] bg-dots relative z-10 w-full mt-20 lg:mt-0">
         
+        <div class="absolute top-4 right-4 md:top-8 md:right-8 bg-white border-4 border-black px-4 py-2 shadow-[4px_4px_0_0_#000] font-black z-20 hidden md:block" id="live-clock">
+            Loading Waktu...
+        </div>
+
         <section id="sec-dashboard" class="content-section block animate-fade-in">
+            <h2 class="text-3xl md:text-4xl font-black mb-6 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">DASHBOARD</h2>
             
-            <div class="lg:hidden mb-6 flex justify-between items-center bg-[#ff90e8] p-4 border-4 border-black shadow-[4px_4px_0_0_#000]">
-                <h1 class="text-2xl font-black uppercase tracking-widest text-black">LIFE MGR</h1>
-                <i class="fa-solid fa-cube text-3xl"></i>
-            </div>
-
-            <div class="lg:hidden mb-8">
-                <h3 class="text-xl md:text-2xl font-black mb-4 bg-white inline-block px-3 py-1 border-4 border-black shadow-[4px_4px_0_0_#000]">AKSES CEPAT</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <button onclick="nav('transaksi')" class="neubrutalism-card bg-white hover:bg-gray-100 flex flex-col items-center justify-center text-center gap-3 p-4">
-                        <i class="fa-solid fa-money-bill-wave text-4xl text-green-500"></i>
-                        <span class="font-black uppercase text-sm">Transaksi</span>
-                    </button>
-                    <button onclick="nav('tugas')" class="neubrutalism-card bg-[#ff90e8] hover:bg-[#ff7be2] flex flex-col items-center justify-center text-center gap-3 p-4">
-                        <i class="fa-solid fa-thumbtack text-4xl text-black"></i>
-                        <span class="font-black uppercase text-sm">Tugas Kuliah</span>
-                    </button>
-                    <button onclick="nav('cicilan')" class="neubrutalism-card bg-[#a3e635] hover:bg-[#8fcc2e] flex flex-col items-center justify-center text-center gap-3 p-4">
-                        <i class="fa-solid fa-envelope-open-text text-4xl text-black"></i>
-                        <span class="font-black uppercase text-sm">Tagihan</span>
-                    </button>
-                    <button onclick="checkPasswordAndNav()" class="neubrutalism-card bg-red-400 hover:bg-red-500 flex flex-col items-center justify-center text-center gap-3 p-4">
-                        <i class="fa-solid fa-lock text-4xl text-black"></i>
-                        <span class="font-black uppercase text-sm">Akun Rahasia</span>
-                    </button>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+                <div class="neubrutalism-card bg-white p-4">
+                    <h3 class="text-black text-xs font-bold uppercase mb-2">Kas Pribadi</h3>
+                    <p class="text-xl font-black truncate" id="saldo-pribadi">Rp 0</p>
+                </div>
+                <div class="neubrutalism-card bg-[#a3e635] p-4">
+                    <h3 class="text-black text-xs font-bold uppercase mb-2">Laba Agen Hari Ini</h3>
+                    <p class="text-xl font-black truncate" id="laba-bisnis">Rp 0</p>
+                </div>
+                <div class="neubrutalism-card bg-[#ffc900] p-4">
+                    <h3 class="text-black text-xs font-bold uppercase mb-2">Joki Aktif</h3>
+                    <p class="text-3xl font-black" id="count-joki">0</p>
+                </div>
+                <div class="neubrutalism-card bg-[#ff90e8] p-4">
+                    <h3 class="text-black text-xs font-bold uppercase mb-2">Tugas Uniska</h3>
+                    <p class="text-3xl font-black" id="count-tugas">0</p>
                 </div>
             </div>
 
-            <h2 class="text-3xl md:text-4xl font-black mb-6 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">RINGKASAN</h2>
-            
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
-                <div class="neubrutalism-card bg-[#ffc900] p-4 md:p-6">
-                    <h3 class="text-black text-xs md:text-sm font-bold uppercase mb-2">Cash</h3>
-                    <p class="text-xl md:text-3xl font-black truncate" id="saldo-cash">Rp 0</p>
-                </div>
-                <div class="neubrutalism-card bg-[#ff90e8] p-4 md:p-6">
-                    <h3 class="text-black text-xs md:text-sm font-bold uppercase mb-2">Saldo ATM</h3>
-                    <p class="text-xl md:text-3xl font-black truncate" id="saldo-atm">Rp 0</p>
-                </div>
-                <div class="neubrutalism-card bg-white p-4 md:p-6">
-                    <h3 class="text-black text-xs md:text-sm font-bold uppercase mb-2">Tugas Aktif</h3>
-                    <p class="text-3xl font-black" id="jumlah-tugas">0</p>
-                </div>
-                <div class="neubrutalism-card bg-red-400 p-4 md:p-6">
-                    <h3 class="text-black text-xs md:text-sm font-bold uppercase mb-2">Tagihan Aktif</h3>
-                    <p class="text-3xl font-black" id="jumlah-cicilan">0</p>
-                </div>
-            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="overflow-hidden">
+                    <h3 class="text-2xl md:text-3xl font-black mb-4 bg-white inline-block px-3 py-1 border-4 border-black">Jadwal Kuliah</h3>
+                    <div class="neubrutalism-card bg-white p-0 overflow-x-auto">
+                        <table class="w-full text-left font-bold border-collapse whitespace-nowrap min-w-[500px]">
+                            <thead>
+                                <tr class="bg-black text-white text-sm md:text-base">
+                                    <th class="p-3 border-b-4 border-black">Hari</th>
+                                    <th class="p-3 border-b-4 border-black border-l-2">Jam (WITA)</th>
+                                    <th class="p-3 border-b-4 border-black border-l-2">Mata Kuliah</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm md:text-base text-black">
+                                <tr class="bg-[#a3e635]">
+                                    <td class="p-3 border-b-4 border-black uppercase" rowspan="4">Senin</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">07.30 - 09.00</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">Jaringan Syaraf Tiruan</td>
+                                </tr>
+                                <tr class="bg-[#a3e635]">
+                                    <td class="p-3 border-b-2 border-black border-l-2">09.10 - 10.40</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">Testing & Implementasi TI</td>
+                                </tr>
+                                <tr class="bg-[#a3e635]">
+                                    <td class="p-3 border-b-2 border-black border-l-2">10.50 - 12.20</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">Metodologi & Penelitian TI</td>
+                                </tr>
+                                <tr class="bg-[#a3e635]">
+                                    <td class="p-3 border-b-4 border-black border-l-2">13.00 - 14.30</td>
+                                    <td class="p-3 border-b-4 border-black border-l-2">Keamanan Sistem Komputer</td>
+                                </tr>
 
-            <h3 class="text-xl md:text-2xl font-black mb-4 bg-white inline-block px-3 py-1 border-4 border-black">Riwayat Terakhir</h3>
-            <div class="neubrutalism-card bg-white w-full p-2 md:p-6">
-                <ul id="list-riwayat" class="space-y-4"></ul>
+                                <tr>
+                                    <td class="p-3 border-b-4 border-black uppercase text-red-500 bg-gray-100">Selasa</td>
+                                    <td class="p-3 border-b-4 border-black border-l-2 text-center text-red-500 bg-gray-100 tracking-widest" colspan="2">LIBUR BOSKU! 🏖️</td>
+                                </tr>
+
+                                <tr class="bg-[#38bdf8]">
+                                    <td class="p-3 border-b-4 border-black uppercase" rowspan="2">Rabu</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">14.40 - 16.10</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">Manajemen Perangkat Lunak</td>
+                                </tr>
+                                <tr class="bg-[#38bdf8]">
+                                    <td class="p-3 border-b-4 border-black border-l-2">16.20 - 17.50</td>
+                                    <td class="p-3 border-b-4 border-black border-l-2">Pengolahan Citra</td>
+                                </tr>
+
+                                <tr class="bg-[#ff90e8]">
+                                    <td class="p-3 border-b-4 border-black uppercase" rowspan="4">Kamis</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">07.30 - 09.00</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">Etika Profesi</td>
+                                </tr>
+                                <tr class="bg-[#ff90e8]">
+                                    <td class="p-3 border-b-2 border-black border-l-2">09.10 - 10.40</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">Fiqih</td>
+                                </tr>
+                                <tr class="bg-[#ff90e8]">
+                                    <td class="p-3 border-b-2 border-black border-l-2">10.50 - 12.20</td>
+                                    <td class="p-3 border-b-2 border-black border-l-2">Sistem Penunjang Keputusan</td>
+                                </tr>
+                                <tr class="bg-[#ff90e8]">
+                                    <td class="p-3 border-b-4 border-black border-l-2">13.00 - 14.30</td>
+                                    <td class="p-3 border-b-4 border-black border-l-2">Riset Operasi</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="p-3 uppercase text-red-500 bg-gray-100">Jum-Min</td>
+                                    <td class="p-3 border-l-2 border-black text-center text-red-500 bg-gray-100 tracking-widest" colspan="2">FULL WEEKEND LIBUR PANJANG! 🎮🔥</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-black mb-4 bg-white inline-block px-3 py-1 border-4 border-black">Riwayat Pribadi</h3>
+                    <div class="neubrutalism-card bg-white p-4 max-h-[400px] overflow-y-auto">
+                        <ul id="list-riwayat" class="space-y-3"></ul>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section id="sec-transaksi" class="content-section hidden animate-fade-in">
-            <button onclick="nav('dashboard')" class="lg:hidden neubrutalism-btn bg-[#ffc900] mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> KEMBALI</button>
-            <h2 class="text-3xl md:text-4xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TRANSAKSI</h2>
-            <form id="form-transaksi" class="neubrutalism-card bg-white max-w-3xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+        <section id="sec-bisnis" class="content-section hidden animate-fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl md:text-4xl font-black bg-[#a3e635] inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">MANDIRI LINK PRO</h2>
+                <div class="flex gap-2">
+                    <button onclick="downloadLaporan('harian')" class="neubrutalism-btn bg-white text-xs md:text-sm"><i class="fa-solid fa-download"></i> Harian</button>
+                    <button onclick="downloadLaporan('bulanan')" id="btn-dl-bulan" class="neubrutalism-btn bg-gray-300 text-gray-500 text-xs md:text-sm cursor-not-allowed" disabled><i class="fa-solid fa-calendar"></i> Bulanan</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                <div class="neubrutalism-card bg-white p-4"><h3 class="font-bold mb-1">Cash Bisnis</h3><p class="text-2xl font-black" id="bisnis-cash">Rp 0</p></div>
+                <div class="neubrutalism-card bg-white p-4"><h3 class="font-bold mb-1">Saldo ATM Bisnis</h3><p class="text-2xl font-black" id="bisnis-atm">Rp 0</p></div>
+                <div class="neubrutalism-card bg-black text-white p-4 col-span-2 lg:col-span-1"><h3 class="font-bold mb-1 text-yellow-400">Keuntungan Hari Ini</h3><p class="text-3xl font-black" id="bisnis-profit">Rp 0</p></div>
+            </div>
+
+            <form id="form-bisnis" class="neubrutalism-card bg-white max-w-4xl mb-8">
+                <h3 class="text-xl font-black border-b-4 border-black pb-2 mb-4">Catat Transaksi Agen</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
-                        <label class="block font-bold mb-2">Jenis</label>
-                        <select id="jenis-trx" class="neubrutalism-input bg-[#a3e635]">
-                            <option value="masuk">Pemasukan (+)</option>
-                            <option value="keluar">Pengeluaran (-)</option>
+                        <label class="block font-bold mb-2">Jenis Transaksi</label>
+                        <select id="jenis-bisnis" class="neubrutalism-input bg-yellow-100">
+                            <option value="Tarik Tunai">Tarik Tunai</option>
+                            <option value="Transfer">Transfer</option>
+                            <option value="Top Up E-Wallet">Top Up E-Wallet</option>
+                            <option value="Top Up Pulsa/Kuota">Top Up Pulsa/Kuota</option>
+                            <option value="Bayar PLN">Bayar Tagihan PLN</option>
+                            <option value="Lainnya">Lainnya...</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block font-bold mb-2">Dompet</label>
-                        <select id="dompet-trx" class="neubrutalism-input bg-yellow-200">
-                            <option value="cash">Cash</option>
+                    <div><label class="block font-bold mb-2">Nominal Transaksi (Rp)</label><input type="number" id="nominal-bisnis" class="neubrutalism-input" required></div>
+                    <div><label class="block font-bold mb-2">Biaya Admin / Untung (Rp)</label><input type="number" id="admin-bisnis" class="neubrutalism-input bg-[#a3e635]" placeholder="Cth: 2500" required></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div><label class="block font-bold mb-2">Keterangan / Nama Klien</label><input type="text" id="ket-bisnis" class="neubrutalism-input" required></div>
+                    <div><label class="block font-bold mb-2">Uang Masuk Ke Dompet</label>
+                        <select id="dompet-bisnis" class="neubrutalism-input">
+                            <option value="cash">Uang Cash</option>
                             <option value="atm">Saldo ATM</option>
                         </select>
                     </div>
                 </div>
-                <div class="mb-6">
-                    <label class="block font-bold mb-2">Nominal (Rp)</label>
-                    <input type="number" id="nominal-trx" class="neubrutalism-input bg-white" required>
+                <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 text-xl">SIMPAN TRANSAKSI AGEN</button>
+            </form>
+            
+            <h3 class="text-xl font-black mb-4">Riwayat Agen Hari Ini</h3>
+            <div class="neubrutalism-card bg-white w-full p-4"><ul id="list-bisnis" class="space-y-2"></ul></div>
+        </section>
+
+        <section id="sec-joki" class="content-section hidden animate-fade-in">
+            <h2 class="text-3xl md:text-4xl font-black mb-8 bg-[#ffc900] inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">JOKI KILAT</h2>
+            <div class="mb-6 px-4 py-3 bg-black text-white font-bold border-4 border-white inline-block text-sm">
+                <i class="fa-solid fa-robot text-yellow-400"></i> Sistem asisten pribadi akan mengirim teror deadline H-3, Hari H, & Overdue langsung ke WhatsApp dan Gmail pribadi kamu sendiri.
+            </div>
+            <form id="form-joki" class="neubrutalism-card bg-white mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                <div><label class="block font-bold mb-2">Nama Tugas Joki / Nama Klien</label><input type="text" id="klien-joki" class="neubrutalism-input" required></div>
+                <div><label class="block font-bold mb-2">No WA Klien (Hanya Catatan Internal)</label><input type="text" id="wa-joki" class="neubrutalism-input" required></div>
+                <div><label class="block font-bold mb-2">Biaya Joki / Keuntungan (Rp)</label><input type="number" id="biaya-joki" class="neubrutalism-input bg-[#a3e635]" required></div>
+                <div><label class="block font-bold mb-2">Deadline Pengerjaan</label><input type="date" id="deadline-joki" class="neubrutalism-input" required></div>
+                <div class="md:col-span-2"><label class="block font-bold mb-2">Email Notif Pribadi</label><input type="email" id="email-joki" class="neubrutalism-input" placeholder="Masukkan email kamu di sini" required></div>
+                <div class="md:col-span-2 mt-2"><button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 text-xl" id="btn-submit-joki">SIMPAN ORDER JOKI & ALARM</button></div>
+            </form>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-joki"></div>
+        </section>
+
+        <section id="sec-transaksi" class="content-section hidden animate-fade-in">
+            <h2 class="text-3xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">KEUANGAN PRIBADI</h2>
+            <form id="form-transaksi" class="neubrutalism-card bg-white max-w-3xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div><label class="block font-bold mb-2">Jenis</label><select id="jenis-trx" class="neubrutalism-input bg-[#a3e635]"><option value="masuk">Pemasukan (+)</option><option value="keluar">Pengeluaran (-)</option></select></div>
+                    <div><label class="block font-bold mb-2">Dompet Pribadi</label><select id="dompet-trx" class="neubrutalism-input"><option value="cash">Cash</option><option value="atm">Saldo ATM</option></select></div>
                 </div>
-                <div class="mb-8">
-                    <label class="block font-bold mb-2">Keterangan</label>
-                    <input type="text" id="ket-trx" class="neubrutalism-input bg-white" placeholder="Makan, Beli Baju, Gaji..." required>
-                </div>
-                <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl hover:bg-gray-800">SIMPAN TRANSAKSI</button>
+                <div class="mb-6"><label class="block font-bold mb-2">Nominal (Rp)</label><input type="number" id="nominal-trx" class="neubrutalism-input" required></div>
+                <div class="mb-8"><label class="block font-bold mb-2">Keterangan</label><input type="text" id="ket-trx" class="neubrutalism-input" placeholder="Beli Makan..." required></div>
+                <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 text-xl">SIMPAN TRANSAKSI PRIBADI</button>
             </form>
         </section>
 
         <section id="sec-tugas" class="content-section hidden animate-fade-in">
-            <button onclick="nav('dashboard')" class="lg:hidden neubrutalism-btn bg-[#ffc900] mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> KEMBALI</button>
-            <h2 class="text-3xl md:text-4xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TUGAS KULIAH</h2>
-            <div class="mb-6 px-4 py-3 bg-black text-white font-bold border-4 border-white inline-block text-sm md:text-base">
-                <i class="fa-solid fa-bell text-yellow-400"></i> Sistem mengirim email peringatan Deadline H-3 & per jam di hari H!
-            </div>
-            
-            <form id="form-tugas" class="neubrutalism-card bg-[#ff90e8] mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4 md:p-6">
-                <div>
-                    <label class="block font-bold mb-2">Judul Tugas</label>
-                    <input type="text" id="nama-tugas" class="neubrutalism-input bg-white" placeholder="Contoh: Bikin Web CRUD" required>
-                </div>
-                <div>
-                    <label class="block font-bold mb-2">Mata Kuliah</label>
-                    <input type="text" id="matkul-tugas" class="neubrutalism-input bg-white" placeholder="Pemrograman Web" required>
-                </div>
-                <div>
-                    <label class="block font-bold mb-2">Tipe Tugas</label>
-                    <select id="tipe-tugas" class="neubrutalism-input bg-white">
-                        <option value="Individu">Individu</option>
-                        <option value="Kelompok">Kelompok</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold mb-2">Deadline (Tgl)</label>
-                    <input type="date" id="deadline-tugas" class="neubrutalism-input bg-white" required>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block font-bold mb-2">Email Penerima Notif</label>
-                    <input type="email" id="email-tugas" class="neubrutalism-input bg-white" placeholder="email.kamu@gmail.com" required>
-                </div>
-                <div class="md:col-span-2 mt-2">
-                    <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl" id="btn-submit-tugas">SIMPAN TUGAS & ALARM</button>
-                </div>
+            <h2 class="text-3xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TUGAS UNISKA</h2>
+            <form id="form-tugas" class="neubrutalism-card bg-[#ff90e8] mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                <div><label class="block font-bold mb-2">Judul Tugas</label><input type="text" id="nama-tugas" class="neubrutalism-input bg-white" required></div>
+                <div><label class="block font-bold mb-2">Mata Kuliah</label><input type="text" id="matkul-tugas" class="neubrutalism-input bg-white" required></div>
+                <div><label class="block font-bold mb-2">Tipe</label><select id="tipe-tugas" class="neubrutalism-input bg-white"><option>Individu</option><option>Kelompok</option></select></div>
+                <div><label class="block font-bold mb-2">Deadline</label><input type="date" id="deadline-tugas" class="neubrutalism-input bg-white" required></div>
+                <div class="md:col-span-2"><label class="block font-bold mb-2">Email Notif Pribadi</label><input type="email" id="email-tugas" class="neubrutalism-input bg-white" required></div>
+                <div class="md:col-span-2 mt-2"><button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 text-xl" id="btn-submit-tugas">SIMPAN TUGAS & ALARM</button></div>
             </form>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-tugas"></div>
         </section>
 
         <section id="sec-cicilan" class="content-section hidden animate-fade-in">
-            <button onclick="nav('dashboard')" class="lg:hidden neubrutalism-btn bg-[#ffc900] mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> KEMBALI</button>
-            <h2 class="text-3xl md:text-4xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TAGIHAN & EMAIL</h2>
-            <div class="mb-6 px-4 py-3 bg-black text-white font-bold border-4 border-white inline-block text-sm md:text-base">
-                <i class="fa-solid fa-bell text-yellow-400"></i> Sistem akan mengirim email peringatan H-3 & per jam pada hari H!
-            </div>
-            
-            <form id="form-cicilan" class="neubrutalism-card bg-[#a3e635] mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4 md:p-6">
-                <div>
-                    <label class="block font-bold mb-2">Nama Tagihan</label>
-                    <input type="text" id="nama-tagihan" class="neubrutalism-input bg-white" placeholder="WiFi, Kost, UKT..." required>
-                </div>
-                <div>
-                    <label class="block font-bold mb-2">Jumlah Tagihan (Rp)</label>
-                    <input type="number" id="jumlah-tagihan" class="neubrutalism-input bg-white" required>
-                </div>
-                <div>
-                    <label class="block font-bold mb-2">Jatuh Tempo (Tgl)</label>
-                    <input type="date" id="tgl-jatuh-tempo" class="neubrutalism-input bg-white" required>
-                </div>
-                <div>
-                    <label class="block font-bold mb-2">Email Penerima Notif</label>
-                    <input type="email" id="email-tagihan" class="neubrutalism-input bg-white" placeholder="email.kamu@gmail.com" required>
-                </div>
-                <div class="md:col-span-2 mt-2">
-                    <button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 md:text-xl" id="btn-submit-tagihan">SIMPAN TAGIHAN & ALARM</button>
-                </div>
+            <h2 class="text-3xl font-black mb-8 bg-white inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">TAGIHAN PRIBADI</h2>
+            <form id="form-cicilan" class="neubrutalism-card bg-[#a3e635] mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                <div><label class="block font-bold mb-2">Nama Tagihan</label><input type="text" id="nama-tagihan" class="neubrutalism-input bg-white" required></div>
+                <div><label class="block font-bold mb-2">Jumlah (Rp)</label><input type="number" id="jumlah-tagihan" class="neubrutalism-input bg-white" required></div>
+                <div><label class="block font-bold mb-2">Jatuh Tempo</label><input type="date" id="tgl-jatuh-tempo" class="neubrutalism-input bg-white" required></div>
+                <div><label class="block font-bold mb-2">Email Notif</label><input type="email" id="email-tagihan" class="neubrutalism-input bg-white" required></div>
+                <div class="md:col-span-2 mt-2"><button type="submit" class="neubrutalism-btn w-full bg-black text-white py-4 text-xl" id="btn-submit-tagihan">SIMPAN TAGIHAN & ALARM</button></div>
             </form>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-cicilan"></div>
         </section>
 
         <section id="sec-akun" class="content-section hidden animate-fade-in">
-            <button onclick="nav('dashboard')" class="lg:hidden neubrutalism-btn bg-[#ffc900] mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> KEMBALI</button>
-            <div class="flex flex-col md:flex-row justify-between mb-8 gap-4 items-start md:items-center">
-                <h2 class="text-3xl md:text-4xl font-black bg-red-400 text-black inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">AKUN RAHASIA</h2>
-                <button onclick="lockAccounts()" class="neubrutalism-btn bg-black text-white px-6 w-full md:w-auto"><i class="fa-solid fa-lock"></i> KUNCI AKUN</button>
+            <div class="flex justify-between mb-8 gap-4 items-center">
+                <h2 class="text-3xl font-black bg-red-400 text-black px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">AKUN RAHASIA</h2>
+                <button onclick="lockAccounts()" class="neubrutalism-btn bg-black text-white px-6"><i class="fa-solid fa-lock"></i> KUNCI</button>
             </div>
-            
-            <form id="form-akun" class="neubrutalism-card bg-white mb-8 flex flex-col md:flex-row gap-4 p-4 md:p-6">
-                <input type="text" id="platform-akun" class="neubrutalism-input flex-1" placeholder="Platform (Ex: IG)" required>
+            <form id="form-akun" class="neubrutalism-card bg-white mb-8 flex flex-col md:flex-row gap-4 p-4">
+                <input type="text" id="platform-akun" class="neubrutalism-input flex-1" placeholder="Platform" required>
                 <input type="text" id="user-akun" class="neubrutalism-input flex-1" placeholder="Username" required>
                 <input type="text" id="pass-akun" class="neubrutalism-input flex-1" placeholder="Password" required>
                 <button type="submit" class="neubrutalism-btn bg-red-400 px-8 py-4">SIMPAN</button>
@@ -215,16 +263,16 @@
     </main>
 
     <div id="password-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-[100] p-4">
-        <div class="bg-white border-8 border-black p-6 md:p-8 max-w-sm w-full shadow-[8px_8px_0_0_#ff90e8] md:shadow-[12px_12px_0_0_#ff90e8]">
-            <h3 class="text-2xl md:text-3xl font-black mb-4 uppercase text-center border-b-4 border-black pb-4">Akses PIN</h3>
+        <div class="bg-white border-8 border-black p-6 max-w-sm w-full shadow-[8px_8px_0_0_#ff90e8]">
+            <h3 class="text-2xl font-black mb-4 uppercase text-center border-b-4 border-black pb-4">Akses PIN</h3>
             <input type="password" id="input-password" class="neubrutalism-input w-full text-center text-3xl tracking-widest mb-6" placeholder="••••">
             <div class="flex gap-4">
-                <button onclick="closeModal()" class="neubrutalism-btn flex-1 bg-[#ffc900] py-3 text-sm md:text-base">BATAL</button>
-                <button onclick="verifyPassword()" class="neubrutalism-btn flex-1 bg-black text-white py-3 text-sm md:text-base">BUKA</button>
+                <button onclick="closeModal()" class="neubrutalism-btn flex-1 bg-[#ffc900]">BATAL</button>
+                <button onclick="verifyPassword()" class="neubrutalism-btn flex-1 bg-black text-white">BUKA</button>
             </div>
         </div>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
