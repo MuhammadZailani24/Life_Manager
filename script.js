@@ -57,7 +57,6 @@ function formatRupiah(angka) { return new Intl.NumberFormat('id-ID', { style: 'c
 let toastTimeout;
 function showToast(pesan, isError = false) {
     const toast = document.getElementById('toast-notif');
-    const msg = document.getElementById('toast-msg');
     
     // Ubah warna kalau error
     if(isError) {
@@ -76,17 +75,28 @@ function showToast(pesan, isError = false) {
     }, 3000);
 }
 
-// --- API SENDER DENGAN POP UP ---
-async function sendToBackend(payload, btnElement, loadingText, defaultText, successMessage) {
-    btnElement.innerText = loadingText; btnElement.disabled = true;
-    try {
-        await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload), headers: { 'Content-Type': 'application/json' } });
-        showToast(successMessage); // Munculkan pop-up saat sukses
-    } catch(err) { 
-        console.error(err); 
-        showToast("Gagal Terkoneksi ke Database!", true);
-    }
-    btnElement.innerText = defaultText; btnElement.disabled = false;
+// --- API SENDER DENGAN POP UP SUPER KILAT (FIRE & FORGET) ---
+function sendToBackend(payload, btnElement, loadingText, defaultText, successMessage) {
+    btnElement.innerText = loadingText; 
+    btnElement.disabled = true;
+
+    // Tembak ke Google Scripts secara background tanpa ditunggu (Optimistic Update)
+    fetch(GAS_URL, { 
+        method: 'POST', 
+        mode: 'no-cors', 
+        body: JSON.stringify(payload), 
+        headers: { 'Content-Type': 'application/json' } 
+    }).catch(err => { 
+        console.error("Fetch Background Error:", err); 
+        showToast("Terjadi gangguan jaringan lokal!", true);
+    });
+
+    // Manipulasi UI agar terasa sangat cepat. Beri jeda 0.8 detik saja untuk kesan "proses"
+    setTimeout(() => {
+        btnElement.innerText = defaultText; 
+        btnElement.disabled = false;
+        showToast(successMessage);
+    }, 800); 
 }
 
 // --- KEUANGAN PRIBADI ---
@@ -132,16 +142,16 @@ function downloadLaporan(tipe) {
 }
 
 // --- JOKI KILAT ---
-document.getElementById('form-joki').addEventListener('submit', async function(e) {
+document.getElementById('form-joki').addEventListener('submit', function(e) {
     e.preventDefault();
     const newData = { id: "JK-" + Date.now(), nama: document.getElementById('klien-joki').value, wa: document.getElementById('wa-joki').value, biaya: parseInt(document.getElementById('biaya-joki').value), deadline: document.getElementById('deadline-joki').value, email: document.getElementById('email-joki').value, status: "Proses" };
     joki.push(newData); simpanData(); updateUI();
     const btn = document.getElementById('btn-submit-joki');
-    await sendToBackend({ action: "addJoki", ...newData }, btn, "LOADING...", "SIMPAN ORDER JOKI & ALARM", "Data Joki Masuk Database! 🚀");
+    sendToBackend({ action: "addJoki", ...newData }, btn, "LOADING...", "SIMPAN ORDER JOKI & ALARM", "Data Joki Masuk Database! 🚀");
     this.reset();
 });
 
-async function selesaikanJoki(index) {
+function selesaikanJoki(index) {
     if(confirm(`Joki ${joki[index].nama} selesai? Biaya masuk laba Mandiri Link.`)) {
         bisnis.profit += joki[index].biaya;
         bisnis.riwayat.unshift({ jenis: "Joki", nominal: 0, admin: joki[index].biaya, ket: `Pemasukan Dari Joki (${joki[index].nama})`, dompet: "-", tanggal: new Date().toLocaleString('id-ID') });
@@ -153,14 +163,14 @@ function hapusJokiLokal(index) { if(confirm("Hapus tampilan lokal?")) { joki.spl
 
 
 // --- TUGAS PRIBADI ---
-document.getElementById('form-tugas').addEventListener('submit', async function(e) {
+document.getElementById('form-tugas').addEventListener('submit', function(e) {
     e.preventDefault();
     const dataBaru = { id: "TGS-" + Date.now(), namaTugas: document.getElementById('nama-tugas').value, matkul: document.getElementById('matkul-tugas').value, tipe: document.getElementById('tipe-tugas').value, deadline: document.getElementById('deadline-tugas').value, email: document.getElementById('email-tugas').value, status: "Belum Selesai" };
     tugas.push(dataBaru); simpanData(); updateUI();
-    await sendToBackend({ action: "addTugas", ...dataBaru }, document.getElementById('btn-submit-tugas'), "LOADING...", "SIMPAN TUGAS & ALARM", "Tugas Masuk Database! 📚");
+    sendToBackend({ action: "addTugas", ...dataBaru }, document.getElementById('btn-submit-tugas'), "LOADING...", "SIMPAN TUGAS & ALARM", "Tugas Masuk Database! 📚");
     this.reset();
 });
-async function selesaikanTugas(index) {
+function selesaikanTugas(index) {
     if(confirm(`Selesaikan tugas ${tugas[index].namaTugas}?`)) {
         tugas[index].status = "Selesai"; simpanData(); updateUI();
         sendToBackend({ action: "selesai", tipe: "tugas", id: tugas[index].id }, document.createElement('button'), "x", "x", "Tugas Selesai! ✅");
@@ -169,14 +179,14 @@ async function selesaikanTugas(index) {
 function hapusTugasLokal(index) { if(confirm("Hapus?")) { tugas.splice(index, 1); simpanData(); updateUI(); } }
 
 // --- TAGIHAN ---
-document.getElementById('form-cicilan').addEventListener('submit', async function(e) {
+document.getElementById('form-cicilan').addEventListener('submit', function(e) {
     e.preventDefault();
     const dataBaru = { id: "ID-" + Date.now(), nama: document.getElementById('nama-tagihan').value, jumlah: parseInt(document.getElementById('jumlah-tagihan').value), tanggalFull: document.getElementById('tgl-jatuh-tempo').value, email: document.getElementById('email-tagihan').value, status: "Belum Bayar" };
     cicilan.push(dataBaru); simpanData(); updateUI();
-    await sendToBackend({ action: "addTagihan", ...dataBaru }, document.getElementById('btn-submit-tagihan'), "LOADING...", "SIMPAN TAGIHAN & ALARM", "Tagihan Masuk Database! 💸");
+    sendToBackend({ action: "addTagihan", ...dataBaru }, document.getElementById('btn-submit-tagihan'), "LOADING...", "SIMPAN TAGIHAN & ALARM", "Tagihan Masuk Database! 💸");
     this.reset();
 });
-async function bayarTagihan(index) {
+function bayarTagihan(index) {
     if(confirm(`Lunas ${cicilan[index].nama}?`)) {
         cicilan[index].status = "Lunas"; simpanData(); updateUI();
         sendToBackend({ action: "selesai", tipe: "tagihan", id: cicilan[index].id }, document.createElement('button'), "x", "x", "Tagihan Lunas! ✅");
