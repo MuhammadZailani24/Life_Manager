@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Manager Pro v3</title>
+    <title>Life Manager Pro v4 - Executive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-[#0f172a] text-slate-100 flex h-screen overflow-hidden selection:bg-blue-500/30 selection:text-blue-200">
@@ -18,7 +22,7 @@
             <p class="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-widest">Bos Zailani</p>
         </div>
         <nav class="p-6 flex flex-col gap-2 flex-1 overflow-y-auto">
-            <button onclick="nav('dashboard')" class="nav-btn btn-dashboard flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition active-nav"><i class="fa-solid fa-border-all w-5 text-center"></i> Dashboard</button>
+            <button onclick="nav('dashboard')" class="nav-btn btn-dashboard flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition active-nav"><i class="fa-solid fa-border-all w-5 text-center"></i> Dashboard Executive</button>
             <button onclick="nav('transaksi')" class="nav-btn btn-transaksi flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition"><i class="fa-solid fa-wallet w-5 text-center"></i> Keuangan Pribadi</button>
             <button onclick="nav('bisnis')" class="nav-btn btn-bisnis flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition"><i class="fa-solid fa-store w-5 text-center"></i> Mandiri Link PRO</button>
             <button onclick="nav('joki')" class="nav-btn btn-joki flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition"><i class="fa-solid fa-keyboard w-5 text-center"></i> Joki Kilat</button>
@@ -34,7 +38,7 @@
             Memuat sistem waktu WITA...
         </div>
 
-        <section id="sec-dashboard" class="content-section block animate-fade-in max-w-6xl mx-auto">
+        <section id="sec-dashboard" class="content-section block animate-fade-in max-w-7xl mx-auto">
             <div class="mb-8 pt-4 lg:pt-0">
                 <h2 class="text-2xl md:text-3xl font-extrabold text-slate-100">Halo, Muhammad Zailani! ⚡</h2>
                 <p class="text-slate-400 mt-1 text-sm font-medium">Panel Kendali Eksekutif Terpusat Gelap & Bersih.</p>
@@ -56,6 +60,24 @@
                 <div class="glass-card p-5 border-l-4 border-l-purple-500 bg-slate-900/20">
                     <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Tugas Uniska</h3>
                     <p class="text-3xl font-extrabold text-slate-200" id="count-tugas">0</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card p-6 lg:col-span-2 relative">
+                    <h3 class="text-lg font-extrabold text-slate-200 mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-line text-green-500"></i> Tren Bisnis 7 Hari Terakhir</h3>
+                    <div class="w-full h-64">
+                        <canvas id="grafikBisnis"></canvas>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col h-full">
+                    <h3 class="text-lg font-extrabold text-slate-200 mb-4 flex items-center gap-2"><i class="fa-solid fa-bolt text-yellow-400"></i> Catatan Kilat (Brain Dump)</h3>
+                    <form id="form-catatan" class="flex gap-2 mb-4">
+                        <input type="text" id="input-catatan" class="input-clean py-2 text-sm flex-1" placeholder="Ketik ide/pesan..." required>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 rounded-xl transition"><i class="fa-solid fa-plus"></i></button>
+                    </form>
+                    <ul id="list-catatan" class="space-y-3 flex-1 overflow-y-auto pr-1 max-h-48"></ul>
                 </div>
             </div>
 
@@ -89,69 +111,50 @@
 
         <section id="sec-bisnis" class="content-section hidden animate-fade-in max-w-5xl mx-auto pt-4 lg:pt-0">
             <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
-            
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <h2 class="text-3xl font-extrabold text-slate-100">Mandiri Link PRO</h2>
                 <div class="flex gap-2 w-full md:w-auto">
-                    <button onclick="unduhPDF('bisnis', 'hari')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-file-pdf text-red-400"></i> Unduh Laporan Hari Ini</button>
-                    <button onclick="unduhPDF('bisnis', 'gabungan')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-database text-blue-400"></i> Unduh Laporan Gabungan</button>
+                    <button onclick="unduhPDF('bisnis', 'hari')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-file-pdf text-red-400"></i> Laporan Hari Ini</button>
+                    <button onclick="unduhPDF('bisnis', 'gabungan')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-database text-blue-400"></i> Laporan Gabungan</button>
                 </div>
             </div>
-
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                 <div class="glass-card p-5"><h3 class="text-sm font-bold text-slate-400 mb-1">Cash Bisnis</h3><p class="text-xl md:text-2xl font-extrabold text-slate-200" id="bisnis-cash">Rp 0</p></div>
                 <div class="glass-card p-5"><h3 class="text-sm font-bold text-slate-400 mb-1">Saldo ATM Bisnis</h3><p class="text-xl md:text-2xl font-extrabold text-slate-200" id="bisnis-atm">Rp 0</p></div>
                 <div class="glass-card p-5 bg-gradient-to-br from-green-600 to-emerald-700 border-none shadow-lg col-span-2 lg:col-span-1"><h3 class="text-sm font-bold text-green-100 mb-1">Keuntungan Agen Hari Ini</h3><p class="text-2xl md:text-3xl font-extrabold text-white" id="bisnis-profit">Rp 0</p></div>
             </div>
-
             <form id="form-bisnis" class="glass-card p-6 mb-8">
                 <h3 class="text-lg font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">Pencatatan Transaksi Finansial Agen</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-bold text-slate-400 mb-2">Jenis Layanan</label>
-                        <select id="jenis-bisnis" class="input-clean">
-                            <option value="Tarik Tunai">Tarik Tunai</option>
-                            <option value="Transfer">Transfer</option>
-                            <option value="Top Up E-Wallet">Top Up E-Wallet</option>
-                            <option value="Top Up Pulsa/Kuota">Top Up Pulsa/Kuota</option>
-                            <option value="Bayar PLN">Bayar Tagihan PLN</option>
-                            <option value="Lainnya">Lainnya...</option>
-                        </select>
+                        <select id="jenis-bisnis" class="input-clean"><option value="Tarik Tunai">Tarik Tunai</option><option value="Transfer">Transfer</option><option value="Top Up E-Wallet">Top Up E-Wallet</option><option value="Top Up Pulsa/Kuota">Top Up Pulsa/Kuota</option><option value="Bayar PLN">Bayar Tagihan PLN</option><option value="Lainnya">Lainnya...</option></select>
                     </div>
                     <div><label class="block text-sm font-bold text-slate-400 mb-2">Nominal Mutasi (Rp)</label><input type="number" id="nominal-bisnis" class="input-clean" required></div>
-                    <div><label class="block text-sm font-bold text-slate-400 mb-2">Biaya Admin Lapangan (Rp)</label><input type="number" id="admin-bisnis" class="input-clean bg-blue-950/20" placeholder="Biaya admin manual" required></div>
+                    <div><label class="block text-sm font-bold text-slate-400 mb-2">Biaya Admin Lapangan (Rp)</label><input type="number" id="admin-bisnis" class="input-clean bg-blue-950/20" required></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div><label class="block text-sm font-bold text-slate-400 mb-2">Keterangan / Nama Nasabah</label><input type="text" id="ket-bisnis" class="input-clean" required></div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-400 mb-2">Penyimpanan Fisik Uang</label>
-                        <select id="dompet-bisnis" class="input-clean">
-                            <option value="cash">Uang Cash Lapangan</option>
-                            <option value="atm">Saldo Dalam ATM</option>
-                        </select>
-                    </div>
+                    <div><label class="block text-sm font-bold text-slate-400 mb-2">Penyimpanan Fisik Uang</label><select id="dompet-bisnis" class="input-clean"><option value="cash">Uang Cash Lapangan</option><option value="atm">Saldo Dalam ATM</option></select></div>
                 </div>
                 <button type="submit" class="btn-clean btn-primary text-base">SIMPAN TRANSAKSI OPERASIONAL AGEN</button>
             </form>
-            
-            <h3 class="text-lg font-bold text-slate-200 mb-4">Riwayat Operasional Hari Ini</h3>
-            <div class="glass-card p-6"><ul id="list-bisnis" class="space-y-3"></ul></div>
+            <h3 class="text-lg font-bold text-slate-200 mb-4">Riwayat Operasional</h3>
+            <div class="glass-card p-6">
+                <ul id="list-bisnis" class="space-y-3"></ul>
+                <button onclick="clearAllBisnis()" class="w-full mt-6 btn-clean bg-red-950/30 text-red-400 hover:bg-red-900/50 border border-red-900/50 text-sm transition-all"><i class="fa-solid fa-trash-can mr-2"></i>Bersihkan Semua Data Agen</button>
+            </div>
         </section>
 
         <section id="sec-joki" class="content-section hidden animate-fade-in max-w-5xl mx-auto pt-4 lg:pt-0">
             <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
-            
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <div class="mb-2">
-                    <h2 class="text-3xl font-extrabold text-slate-100 flex items-center gap-3"><i class="fa-solid fa-keyboard text-blue-500"></i> Pembukuan Joki Kilat</h2>
-                    <p class="text-xs text-slate-400 font-medium mt-1">Data pekerjaan otomatis terhapus dari beranda setelah status diklik selesai.</p>
-                </div>
+                <div class="mb-2"><h2 class="text-3xl font-extrabold text-slate-100 flex items-center gap-3"><i class="fa-solid fa-keyboard text-blue-500"></i> Pembukuan Joki Kilat</h2><p class="text-xs text-slate-400 font-medium mt-1">Data otomatis dicleanup jika status Selesai.</p></div>
                 <div class="flex gap-2 w-full md:w-auto">
-                    <button onclick="unduhPDF('joki', 'hari')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-file-pdf text-red-400"></i> Unduh Laporan Hari Ini</button>
-                    <button onclick="unduhPDF('joki', 'gabungan')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-database text-blue-400"></i> Unduh Laporan Gabungan</button>
+                    <button onclick="unduhPDF('joki', 'hari')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-file-pdf text-red-400"></i> Laporan Hari Ini</button>
+                    <button onclick="unduhPDF('joki', 'gabungan')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-database text-blue-400"></i> Laporan Gabungan</button>
                 </div>
             </div>
-            
             <form id="form-joki" class="glass-card p-6 mb-8 grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div><label class="block text-sm font-bold text-slate-400 mb-2">Nama Pelanggan / Judul Project</label><input type="text" id="klien-joki" class="input-clean" required></div>
                 <div><label class="block text-sm font-bold text-slate-400 mb-2">No WhatsApp Klien (+62...)</label><input type="text" id="wa-joki" class="input-clean" required></div>
@@ -161,11 +164,11 @@
                 <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary text-base" id="btn-submit-joki">SIMPAN ORDER JOKI & AKSIKAN TRIGGER ALARM</button></div>
             </form>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-joki"></div>
+            <button onclick="clearAllJoki()" class="w-full mt-6 btn-clean bg-red-950/30 text-red-400 hover:bg-red-900/50 border border-red-900/50 text-sm transition-all"><i class="fa-solid fa-trash-can mr-2"></i>Bersihkan Semua Riwayat & Omset Joki</button>
         </section>
 
         <section id="sec-transaksi" class="content-section hidden animate-fade-in max-w-3xl mx-auto pt-4 lg:pt-0">
             <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
-            
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <h2 class="text-3xl font-extrabold text-slate-100">Keuangan Arus Kas Pribadi</h2>
                 <div class="flex gap-2 w-full md:w-auto">
@@ -173,23 +176,10 @@
                     <button onclick="unduhPDF('pribadi', 'gabungan')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-database text-blue-400"></i> Laporan Gabungan</button>
                 </div>
             </div>
-
             <form id="form-transaksi" class="glass-card p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-400 mb-2">Arus Mutasi Kas</label>
-                        <select id="jenis-trx" class="input-clean text-blue-400">
-                            <option value="masuk">Pemasukan Kas (+)</option>
-                            <option value="keluar">Pengeluaran Kas (-)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-400 mb-2">Jenis Penyimpanan</label>
-                        <select id="dompet-trx" class="input-clean">
-                            <option value="cash">Uang Tunai Dompet</option>
-                            <option value="atm">Rekening Bank ATM</option>
-                        </select>
-                    </div>
+                    <div><label class="block text-sm font-bold text-slate-400 mb-2">Arus Mutasi Kas</label><select id="jenis-trx" class="input-clean text-blue-400"><option value="masuk">Pemasukan Kas (+)</option><option value="keluar">Pengeluaran Kas (-)</option></select></div>
+                    <div><label class="block text-sm font-bold text-slate-400 mb-2">Jenis Penyimpanan</label><select id="dompet-trx" class="input-clean"><option value="cash">Uang Tunai Dompet</option><option value="atm">Rekening Bank ATM</option></select></div>
                 </div>
                 <div class="mb-5"><label class="block text-sm font-bold text-slate-400 mb-2">Nominal Transaksi (Rp)</label><input type="number" id="nominal-trx" class="input-clean" required></div>
                 <div class="mb-8"><label class="block text-sm font-bold text-slate-400 mb-2">Keterangan Sumber/Keperluan</label><input type="text" id="ket-trx" class="input-clean" placeholder="Contoh: Belanja Bulanan, Konsumsi, Transport..." required></div>
@@ -198,33 +188,28 @@
             <div class="glass-card p-6 mt-8">
                 <h3 class="text-lg font-bold text-slate-200 mb-4">Daftar Riwayat Kas Terkini</h3>
                 <ul id="list-riwayat" class="space-y-4 max-h-72 overflow-y-auto pr-2"></ul>
+                <button onclick="clearAllKeuangan()" class="w-full mt-6 btn-clean bg-red-950/30 text-red-400 hover:bg-red-900/50 border border-red-900/50 text-sm transition-all"><i class="fa-solid fa-trash-can mr-2"></i>Bersihkan Semua Riwayat Kas Pribadi</button>
             </div>
         </section>
 
         <section id="sec-tugas" class="content-section hidden animate-fade-in max-w-4xl mx-auto pt-4 lg:pt-0">
             <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
             <h2 class="text-3xl font-extrabold text-slate-100 mb-2">Tugas Perkuliahan Uniska</h2>
-            <p class="text-xs text-slate-400 font-medium mb-6">Kartu tugas otomatis dicleanup dari layar setelah kamu menandai statusnya selesai.</p>
-            
             <form id="form-tugas" class="glass-card p-6 mb-8 grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div><label class="block text-sm font-bold text-slate-400 mb-2">Materi / Judul Tugas Kuliah</label><input type="text" id="nama-tugas" class="input-clean" required></div>
                 <div><label class="block text-sm font-bold text-slate-400 mb-2">Mata Kuliah Bersangkutan</label><input type="text" id="matkul-tugas" class="input-clean" required></div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-400 mb-2">Sifat Anggota</label>
-                    <select id="tipe-tugas" class="input-clean"><option>Individu</option><option>Kelompok</option></select>
-                </div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Sifat Anggota</label><select id="tipe-tugas" class="input-clean"><option>Individu</option><option>Kelompok</option></select></div>
                 <div><label class="block text-sm font-bold text-slate-400 mb-2">Tanggal Batas Pengumpulan (Deadline)</label><input type="date" id="deadline-tugas" class="input-clean" required></div>
                 <div class="md:col-span-2"><label class="block text-sm font-bold text-slate-400 mb-2">Email Notifikasi Sistem Pribadi</label><input type="email" id="email-tugas" class="input-clean" required></div>
                 <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary text-base" id="btn-submit-tugas">SIMPAN JADWAL TUGAS UNISKA & SET TRIGGER</button></div>
             </form>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-tugas"></div>
+            <button onclick="clearAllTugas()" class="w-full mt-6 btn-clean bg-red-950/30 text-red-400 hover:bg-red-900/50 border border-red-900/50 text-sm transition-all"><i class="fa-solid fa-trash-can mr-2"></i>Bersihkan Semua Data Tugas</button>
         </section>
 
         <section id="sec-cicilan" class="content-section hidden animate-fade-in max-w-4xl mx-auto pt-4 lg:pt-0">
             <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
             <h2 class="text-3xl font-extrabold text-slate-100 mb-2">Tagihan Keuangan Pribadi</h2>
-            <p class="text-xs text-slate-400 font-medium mb-6">Sistem auto-delete kartu tagihan dari UI lokal saat pembayaran sudah diverifikasi lunas.</p>
-            
             <form id="form-cicilan" class="glass-card p-6 mb-8 grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div><label class="block text-sm font-bold text-slate-400 mb-2">Deskripsi Keperluan Tagihan</label><input type="text" id="nama-tagihan" class="input-clean" required></div>
                 <div><label class="block text-sm font-bold text-slate-400 mb-2">Jumlah Kewajiban Pembayaran (Rp)</label><input type="number" id="jumlah-tagihan" class="input-clean" required></div>
@@ -233,6 +218,7 @@
                 <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary text-base" id="btn-submit-tagihan">SIMPAN TAGIHAN & AKTIFKAN MONITORING</button></div>
             </form>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-cicilan"></div>
+            <button onclick="clearAllCicilan()" class="w-full mt-6 btn-clean bg-red-950/30 text-red-400 hover:bg-red-900/50 border border-red-900/50 text-sm transition-all"><i class="fa-solid fa-trash-can mr-2"></i>Bersihkan Semua Data Tagihan</button>
         </section>
 
         <section id="sec-akun" class="content-section hidden animate-fade-in max-w-3xl mx-auto pt-4 lg:pt-0">
@@ -252,30 +238,18 @@
     </main>
 
     <nav class="lg:hidden fixed bottom-0 left-0 right-0 glass-card rounded-none rounded-t-2xl border-t border-slate-800/80 z-50 flex justify-between items-center px-1 py-3 pb-safe bg-slate-950/80 shadow-[0_-8px_30px_rgb(0,0,0,0.5)]">
-        <button onclick="nav('transaksi')" class="nav-btn btn-transaksi flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
-            <i class="fa-solid fa-wallet text-xl"></i><span class="text-[10px] font-bold">Keuangan</span>
-        </button>
-        <button onclick="nav('bisnis')" class="nav-btn btn-bisnis flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
-            <i class="fa-solid fa-store text-xl"></i><span class="text-[10px] font-bold">Mandiri Link</span>
-        </button>
-        <button onclick="nav('joki')" class="nav-btn btn-joki flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
-            <i class="fa-solid fa-keyboard text-xl"></i><span class="text-[10px] font-bold">Joki Kilat</span>
-        </button>
-        <button onclick="nav('tugas')" class="nav-btn btn-tugas flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
-            <i class="fa-solid fa-book text-xl"></i><span class="text-[10px] font-bold">Tugas</span>
-        </button>
-        <button onclick="nav('cicilan')" class="nav-btn btn-cicilan flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
-            <i class="fa-solid fa-envelope-open-text text-xl"></i><span class="text-[10px] font-bold">Tagihan</span>
-        </button>
-        <button onclick="checkPasswordAndNav()" class="nav-btn btn-akun flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
-            <i class="fa-solid fa-lock text-xl"></i><span class="text-[10px] font-bold">Akun</span>
-        </button>
+        <button onclick="nav('transaksi')" class="nav-btn btn-transaksi flex flex-col items-center w-full text-slate-500 gap-1 transition-colors"><i class="fa-solid fa-wallet text-xl"></i><span class="text-[10px] font-bold">Keuangan</span></button>
+        <button onclick="nav('bisnis')" class="nav-btn btn-bisnis flex flex-col items-center w-full text-slate-500 gap-1 transition-colors"><i class="fa-solid fa-store text-xl"></i><span class="text-[10px] font-bold">Mandiri Link</span></button>
+        <button onclick="nav('joki')" class="nav-btn btn-joki flex flex-col items-center w-full text-slate-500 gap-1 transition-colors"><i class="fa-solid fa-keyboard text-xl"></i><span class="text-[10px] font-bold">Joki Kilat</span></button>
+        <button onclick="nav('tugas')" class="nav-btn btn-tugas flex flex-col items-center w-full text-slate-500 gap-1 transition-colors"><i class="fa-solid fa-book text-xl"></i><span class="text-[10px] font-bold">Tugas</span></button>
+        <button onclick="nav('cicilan')" class="nav-btn btn-cicilan flex flex-col items-center w-full text-slate-500 gap-1 transition-colors"><i class="fa-solid fa-envelope-open-text text-xl"></i><span class="text-[10px] font-bold">Tagihan</span></button>
+        <button onclick="checkPasswordAndNav()" class="nav-btn btn-akun flex flex-col items-center w-full text-slate-500 gap-1 transition-colors"><i class="fa-solid fa-lock text-xl"></i><span class="text-[10px] font-bold">Akun</span></button>
     </nav>
 
     <div id="password-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden z-[100] p-4 transition-opacity">
         <div class="glass-card p-8 max-w-sm w-full bg-slate-900/90 border border-slate-800 shadow-2xl">
-            <h3 class="text-2xl font-extrabold mb-1 text-center text-slate-100">Keamanan Enkripsi</h3>
-            <p class="text-xs text-center text-slate-400 mb-6">Masukkan PIN Akses Sistem Manajemen Utama.</p>
+            <h3 class="text-2xl font-extrabold mb-1 text-center text-slate-100">Keamanan Sistem</h3>
+            <p class="text-xs text-center text-slate-400 mb-6">Masukkan PIN Akses Manajemen Rahasia.</p>
             <input type="password" id="input-password" class="input-clean w-full text-center text-3xl tracking-[0.4em] mb-6 font-bold text-blue-500 bg-slate-950" placeholder="••••">
             <div class="flex gap-4">
                 <button onclick="closeModal()" class="btn-clean bg-slate-800 text-slate-300 hover:bg-slate-700 flex-1">Batal</button>
@@ -283,7 +257,6 @@
             </div>
         </div>
     </div>
-    
     <script src="script.js"></script>
 </body>
 </html>
