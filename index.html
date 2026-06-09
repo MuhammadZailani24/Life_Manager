@@ -3,124 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Manager Pro</title>
+    <title>Life Manager Pro v3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden selection:bg-blue-200 selection:text-blue-900">
+<body class="bg-[#0f172a] text-slate-100 flex h-screen overflow-hidden selection:bg-blue-500/30 selection:text-blue-200">
 
-    <aside class="hidden lg:flex w-72 glass-card rounded-none border-r border-slate-200 flex-col h-full z-50">
-        <div class="p-8 text-center border-b border-slate-200">
-            <h1 class="text-3xl font-extrabold tracking-tight text-blue-600">LIFE MGR</h1>
-            <p class="text-sm font-semibold text-slate-500 mt-1">Bos Zailani</p>
+    <aside class="hidden lg:flex w-72 glass-card rounded-none border-r border-slate-800 flex-col h-full z-50">
+        <div class="p-8 text-center border-b border-slate-800">
+            <h1 class="text-3xl font-extrabold tracking-tight text-blue-500 drop-shadow-sm">LIFE MGR</h1>
+            <p class="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-widest">Bos Zailani</p>
         </div>
-        <nav class="p-6 flex flex-col gap-3 flex-1 overflow-y-auto">
-            <button onclick="nav('dashboard')" class="nav-btn btn-dashboard flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-blue-50 text-slate-600 font-semibold transition active-nav"><i class="fa-solid fa-border-all w-6 text-center"></i> Dashboard</button>
-            <button onclick="nav('transaksi')" class="nav-btn btn-transaksi flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-blue-50 text-slate-600 font-semibold transition"><i class="fa-solid fa-wallet w-6 text-center"></i> Keuangan Pribadi</button>
-            <button onclick="nav('bisnis')" class="nav-btn btn-bisnis flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-blue-50 text-slate-600 font-semibold transition"><i class="fa-solid fa-store w-6 text-center"></i> Mandiri Link PRO</button>
-            <button onclick="nav('joki')" class="nav-btn btn-joki flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-blue-50 text-slate-600 font-semibold transition"><i class="fa-solid fa-keyboard w-6 text-center"></i> Joki Kilat</button>
-            <button onclick="nav('tugas')" class="nav-btn btn-tugas flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-blue-50 text-slate-600 font-semibold transition"><i class="fa-solid fa-book w-6 text-center"></i> Tugas Kuliah</button>
-            <button onclick="nav('cicilan')" class="nav-btn btn-cicilan flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-blue-50 text-slate-600 font-semibold transition"><i class="fa-solid fa-envelope-open-text w-6 text-center"></i> Tagihan Pribadi</button>
-            <button onclick="checkPasswordAndNav()" class="nav-btn btn-akun flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-red-50 text-red-500 font-semibold transition mt-auto"><i class="fa-solid fa-lock w-6 text-center"></i> Akun Rahasia</button>
+        <nav class="p-6 flex flex-col gap-2 flex-1 overflow-y-auto">
+            <button onclick="nav('dashboard')" class="nav-btn btn-dashboard flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition active-nav"><i class="fa-solid fa-border-all w-5 text-center"></i> Dashboard</button>
+            <button onclick="nav('transaksi')" class="nav-btn btn-transaksi flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition"><i class="fa-solid fa-wallet w-5 text-center"></i> Keuangan Pribadi</button>
+            <button onclick="nav('bisnis')" class="nav-btn btn-bisnis flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition"><i class="fa-solid fa-store w-5 text-center"></i> Mandiri Link PRO</button>
+            <button onclick="nav('joki')" class="nav-btn btn-joki flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition"><i class="fa-solid fa-keyboard w-5 text-center"></i> Joki Kilat</button>
+            <button onclick="nav('tugas')" class="nav-btn btn-tugas flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition"><i class="fa-solid fa-book w-5 text-center"></i> Tugas Uniska</button>
+            <button onclick="nav('cicilan')" class="nav-btn btn-cicilan flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 font-semibold transition"><i class="fa-solid fa-envelope-open-text w-5 text-center"></i> Tagihan Pribadi</button>
+            <button onclick="checkPasswordAndNav()" class="nav-btn btn-akun flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-red-950/40 text-red-400 font-semibold transition mt-auto"><i class="fa-solid fa-lock w-5 text-center"></i> Akun Rahasia</button>
         </nav>
     </aside>
 
     <main class="flex-1 overflow-y-auto relative pb-36 lg:pb-8 p-4 md:p-8">
         
-        <div class="absolute top-4 right-4 md:top-8 md:right-8 glass-card px-4 py-2 text-sm font-bold text-blue-600 z-20 hidden md:block" id="live-clock">
-            Memuat waktu...
+        <div class="absolute top-4 right-4 md:top-8 md:right-8 glass-card bg-slate-900/40 px-4 py-2 text-sm font-bold text-blue-400 z-20 hidden md:block border border-slate-800" id="live-clock">
+            Memuat sistem waktu WITA...
         </div>
 
         <section id="sec-dashboard" class="content-section block animate-fade-in max-w-6xl mx-auto">
             <div class="mb-8 pt-4 lg:pt-0">
-                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">Halo, Muhammad Zailani! 👋</h2>
-                <p class="text-slate-500 mt-1">Pantau bisnis dan studimu hari ini.</p>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-100">Halo, Muhammad Zailani! ⚡</h2>
+                <p class="text-slate-400 mt-1 text-sm font-medium">Panel Kendali Eksekutif Terpusat Gelap & Bersih.</p>
             </div>
             
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
-                <div class="glass-card p-5">
-                    <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Kas Pribadi</h3>
-                    <p class="text-2xl font-extrabold text-slate-800 truncate" id="saldo-pribadi">Rp 0</p>
-                </div>
-                <div class="glass-card p-5 border-l-4 border-l-green-400">
+                <div class="glass-card p-5 border-l-4 border-l-green-500 bg-slate-900/20">
                     <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Laba Agen Hari Ini</h3>
-                    <p class="text-2xl font-extrabold text-green-600 truncate" id="laba-bisnis">Rp 0</p>
+                    <p class="text-xl md:text-2xl font-extrabold text-green-400 truncate" id="laba-bisnis">Rp 0</p>
                 </div>
-                <div class="glass-card p-5 border-l-4 border-l-orange-400">
+                <div class="glass-card p-5 border-l-4 border-l-blue-500 bg-slate-900/20">
+                    <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Omset Joki Hari Ini</h3>
+                    <p class="text-xl md:text-2xl font-extrabold text-blue-400 truncate" id="laba-joki">Rp 0</p>
+                </div>
+                <div class="glass-card p-5 border-l-4 border-l-orange-500 bg-slate-900/20">
                     <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Joki Aktif</h3>
-                    <p class="text-3xl font-extrabold text-slate-800" id="count-joki">0</p>
+                    <p class="text-3xl font-extrabold text-slate-200" id="count-joki">0</p>
                 </div>
-                <div class="glass-card p-5 border-l-4 border-l-blue-400">
+                <div class="glass-card p-5 border-l-4 border-l-purple-500 bg-slate-900/20">
                     <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Tugas Uniska</h3>
-                    <p class="text-3xl font-extrabold text-slate-800" id="count-tugas">0</p>
+                    <p class="text-3xl font-extrabold text-slate-200" id="count-tugas">0</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div class="glass-card p-6">
-                    <h3 class="text-lg font-extrabold text-slate-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-calendar-days text-blue-500"></i> Jadwal Kuliah</h3>
-                    <div class="overflow-hidden rounded-xl border border-slate-100">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-50 text-slate-500">
-                                <tr>
-                                    <th class="p-3 font-semibold">Hari</th>
-                                    <th class="p-3 font-semibold">Mata Kuliah</th>
-                                    <th class="p-3 font-semibold">Jam</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Senin</td><td class="p-3">Jaringan Syaraf Tiruan</td><td class="p-3 text-slate-400 text-xs md:text-sm">07:30 - 09:00</td></tr>
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Senin</td><td class="p-3">Testing & Implementasi di Bidang TI</td><td class="p-3 text-slate-400 text-xs md:text-sm">09:10 - 10:40</td></tr>
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Senin</td><td class="p-3">Metodologi & Penelitian di Bidang TI</td><td class="p-3 text-slate-400 text-xs md:text-sm">10:50 - 12:20</td></tr>
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Senin</td><td class="p-3">Keamanan Sistem Komputer</td><td class="p-3 text-slate-400 text-xs md:text-sm">13:00 - 14:30</td></tr>
-                                
-                                <tr class="hover:bg-slate-50 transition bg-slate-50/50"><td class="p-3 text-blue-600 font-bold">Selasa</td><td class="p-3 italic text-slate-400">Libur / Free Time</td><td class="p-3 text-slate-400 text-xs md:text-sm">-</td></tr>
-                                
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Rabu</td><td class="p-3">Manajemen Perangkat Lunak</td><td class="p-3 text-slate-400 text-xs md:text-sm">14:40 - 16:10</td></tr>
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Rabu</td><td class="p-3">Pengolahan Citra</td><td class="p-3 text-slate-400 text-xs md:text-sm">16:20 - 17:50</td></tr>
-                                
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Kamis</td><td class="p-3">Etika Profesi</td><td class="p-3 text-slate-400 text-xs md:text-sm">07:30 - 09:00</td></tr>
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Kamis</td><td class="p-3">Fiqih</td><td class="p-3 text-slate-400 text-xs md:text-sm">09:10 - 10:40</td></tr>
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Kamis</td><td class="p-3">Sistem Penunjang Keputusan</td><td class="p-3 text-slate-400 text-xs md:text-sm">10:50 - 12:20</td></tr>
-                                <tr class="hover:bg-slate-50 transition"><td class="p-3 text-blue-600 font-bold">Kamis</td><td class="p-3">Riset Operasi</td><td class="p-3 text-slate-400 text-xs md:text-sm">13:00 - 14:30</td></tr>
-
-                                <tr class="hover:bg-slate-50 transition bg-slate-50/50"><td class="p-3 text-blue-600 font-bold">Jumat</td><td class="p-3 italic text-slate-400">Libur / Free Time</td><td class="p-3 text-slate-400 text-xs md:text-sm">-</td></tr>
-                                <tr class="hover:bg-slate-50 transition bg-slate-50/50"><td class="p-3 text-blue-600 font-bold">Sabtu</td><td class="p-3 italic text-slate-400">Libur / Free Time</td><td class="p-3 text-slate-400 text-xs md:text-sm">-</td></tr>
-                                <tr class="hover:bg-slate-50 transition bg-slate-50/50"><td class="p-3 text-blue-600 font-bold">Minggu</td><td class="p-3 italic text-slate-400">Libur / Free Time</td><td class="p-3 text-slate-400 text-xs md:text-sm">-</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="glass-card p-6">
-                    <h3 class="text-lg font-extrabold text-slate-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-500"></i> Riwayat Pribadi Terakhir</h3>
-                    <ul id="list-riwayat" class="space-y-4 max-h-56 overflow-y-auto pr-2"></ul>
+            <div class="glass-card p-6 mb-8">
+                <h3 class="text-lg font-extrabold text-slate-200 mb-4 flex items-center gap-2"><i class="fa-solid fa-calendar-days text-blue-500"></i> Jadwal Kuliah Informatika Uniska</h3>
+                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-800/60 text-slate-400">
+                            <tr><th class="p-3 font-semibold">Hari</th><th class="p-3 font-semibold">Mata Kuliah</th><th class="p-3 font-semibold">Jam Operasional</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300 font-medium">
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Senin</td><td class="p-3">Jaringan Syaraf Tiruan</td><td class="p-3 text-slate-400">07:30 - 09:00</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Senin</td><td class="p-3">Testing & Implementasi di Bidang TI</td><td class="p-3 text-slate-400">09:10 - 10:40</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Senin</td><td class="p-3">Metodologi & Penelitian di Bidang TI</td><td class="p-3 text-slate-400">10:50 - 12:20</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Senin</td><td class="p-3">Keamanan Sistem Komputer</td><td class="p-3 text-slate-400">13:00 - 14:30</td></tr>
+                            <tr class="bg-slate-900/40 text-slate-500"><td class="p-3 font-bold">Selasa</td><td class="p-3 italic">Libur Akademik / Fokus Bisnis</td><td class="p-3">-</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Rabu</td><td class="p-3">Manajemen Perangkat Lunak</td><td class="p-3 text-slate-400">14:40 - 16:10</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Rabu</td><td class="p-3">Pengolahan Citra</td><td class="p-3 text-slate-400">16:20 - 17:50</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Kamis</td><td class="p-3">Etika Profesi</td><td class="p-3 text-slate-400">07:30 - 09:00</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Kamis</td><td class="p-3">Fiqih</td><td class="p-3 text-slate-400">09:10 - 10:40</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Kamis</td><td class="p-3">Sistem Penunjang Keputusan</td><td class="p-3 text-slate-400">10:50 - 12:20</td></tr>
+                            <tr class="hover:bg-slate-800/40 transition"><td class="p-3 text-blue-400 font-bold">Kamis</td><td class="p-3">Riset Operasi</td><td class="p-3 text-slate-400">13:00 - 14:30</td></tr>
+                            <tr class="bg-slate-900/40 text-slate-500"><td class="p-3 font-bold">Jumat</td><td class="p-3 italic">Libur Akademik / Free Time</td><td class="p-3">-</td></tr>
+                            <tr class="bg-slate-900/40 text-slate-500"><td class="p-3 font-bold">Sabtu</td><td class="p-3 italic">Libur Akademik / Weekend</td><td class="p-3">-</td></tr>
+                            <tr class="bg-slate-900/40 text-slate-500"><td class="p-3 font-bold">Minggu</td><td class="p-3 italic">Libur Akademik / Weekend</td><td class="p-3">-</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
 
         <section id="sec-bisnis" class="content-section hidden animate-fade-in max-w-5xl mx-auto pt-4 lg:pt-0">
-            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
+            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
             
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <h2 class="text-3xl font-extrabold text-slate-800">Mandiri Link PRO</h2>
+                <h2 class="text-3xl font-extrabold text-slate-100">Mandiri Link PRO</h2>
                 <div class="flex gap-2 w-full md:w-auto">
-                    <button onclick="downloadLaporan('harian')" class="glass-card px-4 py-2 text-sm font-bold text-blue-600 hover:bg-blue-50 transition w-full md:w-auto"><i class="fa-solid fa-download mr-1"></i> Laporan Harian</button>
-                    <button onclick="downloadLaporan('bulanan')" id="btn-dl-bulan" class="glass-card px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed w-full md:w-auto" disabled><i class="fa-solid fa-calendar mr-1"></i> Bulanan</button>
+                    <button onclick="unduhPDF('bisnis', 'hari')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-file-pdf text-red-400"></i> Unduh Laporan Hari Ini</button>
+                    <button onclick="unduhPDF('bisnis', 'gabungan')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-database text-blue-400"></i> Unduh Laporan Gabungan</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                <div class="glass-card p-5"><h3 class="text-sm font-bold text-slate-400 mb-1">Cash Bisnis</h3><p class="text-2xl font-extrabold text-slate-800" id="bisnis-cash">Rp 0</p></div>
-                <div class="glass-card p-5"><h3 class="text-sm font-bold text-slate-400 mb-1">Saldo ATM Bisnis</h3><p class="text-2xl font-extrabold text-slate-800" id="bisnis-atm">Rp 0</p></div>
-                <div class="glass-card p-5 bg-gradient-to-br from-blue-500 to-blue-600 border-none shadow-lg col-span-2 lg:col-span-1"><h3 class="text-sm font-bold text-blue-100 mb-1">Keuntungan Hari Ini</h3><p class="text-3xl font-extrabold text-white" id="bisnis-profit">Rp 0</p></div>
+                <div class="glass-card p-5"><h3 class="text-sm font-bold text-slate-400 mb-1">Cash Bisnis</h3><p class="text-xl md:text-2xl font-extrabold text-slate-200" id="bisnis-cash">Rp 0</p></div>
+                <div class="glass-card p-5"><h3 class="text-sm font-bold text-slate-400 mb-1">Saldo ATM Bisnis</h3><p class="text-xl md:text-2xl font-extrabold text-slate-200" id="bisnis-atm">Rp 0</p></div>
+                <div class="glass-card p-5 bg-gradient-to-br from-green-600 to-emerald-700 border-none shadow-lg col-span-2 lg:col-span-1"><h3 class="text-sm font-bold text-green-100 mb-1">Keuntungan Agen Hari Ini</h3><p class="text-2xl md:text-3xl font-extrabold text-white" id="bisnis-profit">Rp 0</p></div>
             </div>
 
             <form id="form-bisnis" class="glass-card p-6 mb-8">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Catat Transaksi Agen</h3>
+                <h3 class="text-lg font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">Pencatatan Transaksi Finansial Agen</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
-                        <label class="block text-sm font-bold text-slate-600 mb-2">Jenis Transaksi</label>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Jenis Layanan</label>
                         <select id="jenis-bisnis" class="input-clean">
                             <option value="Tarik Tunai">Tarik Tunai</option>
                             <option value="Transfer">Transfer</option>
@@ -130,145 +118,168 @@
                             <option value="Lainnya">Lainnya...</option>
                         </select>
                     </div>
-                    <div><label class="block text-sm font-bold text-slate-600 mb-2">Nominal (Rp)</label><input type="number" id="nominal-bisnis" class="input-clean" required></div>
-                    <div><label class="block text-sm font-bold text-slate-600 mb-2">Biaya Admin (Rp)</label><input type="number" id="admin-bisnis" class="input-clean bg-blue-50" placeholder="Cth: 2500" required></div>
+                    <div><label class="block text-sm font-bold text-slate-400 mb-2">Nominal Mutasi (Rp)</label><input type="number" id="nominal-bisnis" class="input-clean" required></div>
+                    <div><label class="block text-sm font-bold text-slate-400 mb-2">Biaya Admin Lapangan (Rp)</label><input type="number" id="admin-bisnis" class="input-clean bg-blue-950/20" placeholder="Biaya admin manual" required></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div><label class="block text-sm font-bold text-slate-600 mb-2">Keterangan / Nama Klien</label><input type="text" id="ket-bisnis" class="input-clean" required></div>
+                    <div><label class="block text-sm font-bold text-slate-400 mb-2">Keterangan / Nama Nasabah</label><input type="text" id="ket-bisnis" class="input-clean" required></div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-600 mb-2">Uang Masuk Ke Dompet</label>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Penyimpanan Fisik Uang</label>
                         <select id="dompet-bisnis" class="input-clean">
-                            <option value="cash">Uang Cash</option>
-                            <option value="atm">Saldo ATM</option>
+                            <option value="cash">Uang Cash Lapangan</option>
+                            <option value="atm">Saldo Dalam ATM</option>
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn-clean btn-primary">SIMPAN TRANSAKSI AGEN</button>
+                <button type="submit" class="btn-clean btn-primary text-base">SIMPAN TRANSAKSI OPERASIONAL AGEN</button>
             </form>
             
-            <h3 class="text-lg font-bold text-slate-800 mb-4">Riwayat Agen Hari Ini</h3>
+            <h3 class="text-lg font-bold text-slate-200 mb-4">Riwayat Operasional Hari Ini</h3>
             <div class="glass-card p-6"><ul id="list-bisnis" class="space-y-3"></ul></div>
         </section>
 
-        <section id="sec-joki" class="content-section hidden animate-fade-in max-w-4xl mx-auto pt-4 lg:pt-0">
-            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
-            <div class="mb-6">
-                <h2 class="text-3xl font-extrabold text-slate-800 mb-2 flex items-center gap-3"><i class="fa-solid fa-keyboard text-blue-500"></i> Joki Kilat</h2>
-                <p class="text-sm text-slate-500 font-medium">Sistem otomatis memasukkan biaya Joki ke Laba Agen saat selesai ditekan.</p>
+        <section id="sec-joki" class="content-section hidden animate-fade-in max-w-5xl mx-auto pt-4 lg:pt-0">
+            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div class="mb-2">
+                    <h2 class="text-3xl font-extrabold text-slate-100 flex items-center gap-3"><i class="fa-solid fa-keyboard text-blue-500"></i> Pembukuan Joki Kilat</h2>
+                    <p class="text-xs text-slate-400 font-medium mt-1">Data pekerjaan otomatis terhapus dari beranda setelah status diklik selesai.</p>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button onclick="unduhPDF('joki', 'hari')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-file-pdf text-red-400"></i> Unduh Laporan Hari Ini</button>
+                    <button onclick="unduhPDF('joki', 'gabungan')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-database text-blue-400"></i> Unduh Laporan Gabungan</button>
+                </div>
             </div>
             
             <form id="form-joki" class="glass-card p-6 mb-8 grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Nama Pelanggan/Tugas</label><input type="text" id="klien-joki" class="input-clean" required></div>
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">No WA Klien (+62...)</label><input type="text" id="wa-joki" class="input-clean" required></div>
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Biaya Joki (Rp)</label><input type="number" id="biaya-joki" class="input-clean" required></div>
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Deadline</label><input type="date" id="deadline-joki" class="input-clean" required></div>
-                <div class="md:col-span-2"><label class="block text-sm font-bold text-slate-600 mb-2">Email Klien (Untuk Notif Email)</label><input type="email" id="email-joki" class="input-clean" required></div>
-                <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary" id="btn-submit-joki">SIMPAN ORDER & PASANG ALARM</button></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Nama Pelanggan / Judul Project</label><input type="text" id="klien-joki" class="input-clean" required></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">No WhatsApp Klien (+62...)</label><input type="text" id="wa-joki" class="input-clean" required></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Biaya Joki / Deal Fee (Rp)</label><input type="number" id="biaya-joki" class="input-clean" required></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Batas Waktu Pengerjaan (Deadline)</label><input type="date" id="deadline-joki" class="input-clean" required></div>
+                <div class="md:col-span-2"><label class="block text-sm font-bold text-slate-400 mb-2">Alamat Email Klien (Untuk Notifikasi Alarm Klien)</label><input type="email" id="email-joki" class="input-clean" required></div>
+                <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary text-base" id="btn-submit-joki">SIMPAN ORDER JOKI & AKSIKAN TRIGGER ALARM</button></div>
             </form>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-joki"></div>
         </section>
 
         <section id="sec-transaksi" class="content-section hidden animate-fade-in max-w-3xl mx-auto pt-4 lg:pt-0">
-            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
-            <h2 class="text-3xl font-extrabold text-slate-800 mb-8">Keuangan Pribadi</h2>
+            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h2 class="text-3xl font-extrabold text-slate-100">Keuangan Arus Kas Pribadi</h2>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button onclick="unduhPDF('pribadi', 'hari')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-file-pdf text-red-400"></i> Laporan Hari Ini</button>
+                    <button onclick="unduhPDF('pribadi', 'gabungan')" class="btn-clean btn-secondary text-xs md:text-sm md:w-auto flex-1"><i class="fa-solid fa-database text-blue-400"></i> Laporan Gabungan</button>
+                </div>
+            </div>
+
             <form id="form-transaksi" class="glass-card p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                     <div>
-                        <label class="block text-sm font-bold text-slate-600 mb-2">Jenis</label>
-                        <select id="jenis-trx" class="input-clean text-blue-600">
-                            <option value="masuk">Pemasukan (+)</option>
-                            <option value="keluar" class="text-red-500">Pengeluaran (-)</option>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Arus Mutasi Kas</label>
+                        <select id="jenis-trx" class="input-clean text-blue-400">
+                            <option value="masuk">Pemasukan Kas (+)</option>
+                            <option value="keluar">Pengeluaran Kas (-)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-600 mb-2">Dompet Pribadi</label>
+                        <label class="block text-sm font-bold text-slate-400 mb-2">Jenis Penyimpanan</label>
                         <select id="dompet-trx" class="input-clean">
-                            <option value="cash">Cash</option>
-                            <option value="atm">Saldo ATM</option>
+                            <option value="cash">Uang Tunai Dompet</option>
+                            <option value="atm">Rekening Bank ATM</option>
                         </select>
                     </div>
                 </div>
-                <div class="mb-5"><label class="block text-sm font-bold text-slate-600 mb-2">Nominal (Rp)</label><input type="number" id="nominal-trx" class="input-clean" required></div>
-                <div class="mb-8"><label class="block text-sm font-bold text-slate-600 mb-2">Keterangan</label><input type="text" id="ket-trx" class="input-clean" placeholder="Beli Makan..." required></div>
-                <button type="submit" class="btn-clean btn-primary">SIMPAN TRANSAKSI PRIBADI</button>
+                <div class="mb-5"><label class="block text-sm font-bold text-slate-400 mb-2">Nominal Transaksi (Rp)</label><input type="number" id="nominal-trx" class="input-clean" required></div>
+                <div class="mb-8"><label class="block text-sm font-bold text-slate-400 mb-2">Keterangan Sumber/Keperluan</label><input type="text" id="ket-trx" class="input-clean" placeholder="Contoh: Belanja Bulanan, Konsumsi, Transport..." required></div>
+                <button type="submit" class="btn-clean btn-primary text-base">SIMPAN MUTASI ARUS KAS PRIBADI</button>
             </form>
+            <div class="glass-card p-6 mt-8">
+                <h3 class="text-lg font-bold text-slate-200 mb-4">Daftar Riwayat Kas Terkini</h3>
+                <ul id="list-riwayat" class="space-y-4 max-h-72 overflow-y-auto pr-2"></ul>
+            </div>
         </section>
 
         <section id="sec-tugas" class="content-section hidden animate-fade-in max-w-4xl mx-auto pt-4 lg:pt-0">
-            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
-            <h2 class="text-3xl font-extrabold text-slate-800 mb-8">Tugas Uniska</h2>
+            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
+            <h2 class="text-3xl font-extrabold text-slate-100 mb-2">Tugas Perkuliahan Uniska</h2>
+            <p class="text-xs text-slate-400 font-medium mb-6">Kartu tugas otomatis dicleanup dari layar setelah kamu menandai statusnya selesai.</p>
+            
             <form id="form-tugas" class="glass-card p-6 mb-8 grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Judul Tugas</label><input type="text" id="nama-tugas" class="input-clean" required></div>
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Mata Kuliah</label><input type="text" id="matkul-tugas" class="input-clean" required></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Materi / Judul Tugas Kuliah</label><input type="text" id="nama-tugas" class="input-clean" required></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Mata Kuliah Bersangkutan</label><input type="text" id="matkul-tugas" class="input-clean" required></div>
                 <div>
-                    <label class="block text-sm font-bold text-slate-600 mb-2">Tipe</label>
+                    <label class="block text-sm font-bold text-slate-400 mb-2">Sifat Anggota</label>
                     <select id="tipe-tugas" class="input-clean"><option>Individu</option><option>Kelompok</option></select>
                 </div>
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Deadline</label><input type="date" id="deadline-tugas" class="input-clean" required></div>
-                <div class="md:col-span-2"><label class="block text-sm font-bold text-slate-600 mb-2">Email Notif Pribadi</label><input type="email" id="email-tugas" class="input-clean" required></div>
-                <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary" id="btn-submit-tugas">SIMPAN TUGAS & ALARM</button></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Tanggal Batas Pengumpulan (Deadline)</label><input type="date" id="deadline-tugas" class="input-clean" required></div>
+                <div class="md:col-span-2"><label class="block text-sm font-bold text-slate-400 mb-2">Email Notifikasi Sistem Pribadi</label><input type="email" id="email-tugas" class="input-clean" required></div>
+                <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary text-base" id="btn-submit-tugas">SIMPAN JADWAL TUGAS UNISKA & SET TRIGGER</button></div>
             </form>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-tugas"></div>
         </section>
 
         <section id="sec-cicilan" class="content-section hidden animate-fade-in max-w-4xl mx-auto pt-4 lg:pt-0">
-            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
-            <h2 class="text-3xl font-extrabold text-slate-800 mb-8">Tagihan Pribadi</h2>
+            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
+            <h2 class="text-3xl font-extrabold text-slate-100 mb-2">Tagihan Keuangan Pribadi</h2>
+            <p class="text-xs text-slate-400 font-medium mb-6">Sistem auto-delete kartu tagihan dari UI lokal saat pembayaran sudah diverifikasi lunas.</p>
+            
             <form id="form-cicilan" class="glass-card p-6 mb-8 grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Nama Tagihan</label><input type="text" id="nama-tagihan" class="input-clean" required></div>
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Jumlah (Rp)</label><input type="number" id="jumlah-tagihan" class="input-clean" required></div>
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Jatuh Tempo</label><input type="date" id="tgl-jatuh-tempo" class="input-clean" required></div>
-                <div><label class="block text-sm font-bold text-slate-600 mb-2">Email Notif</label><input type="email" id="email-tagihan" class="input-clean" required></div>
-                <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary" id="btn-submit-tagihan">SIMPAN TAGIHAN & ALARM</button></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Deskripsi Keperluan Tagihan</label><input type="text" id="nama-tagihan" class="input-clean" required></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Jumlah Kewajiban Pembayaran (Rp)</label><input type="number" id="jumlah-tagihan" class="input-clean" required></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Tanggal Jatuh Tempo Pembayaran</label><input type="date" id="tgl-jatuh-tempo" class="input-clean" required></div>
+                <div><label class="block text-sm font-bold text-slate-400 mb-2">Email Tujuan Notifikasi Peringatan</label><input type="email" id="email-tagihan" class="input-clean" required></div>
+                <div class="md:col-span-2 mt-2"><button type="submit" class="btn-clean btn-primary text-base" id="btn-submit-tagihan">SIMPAN TAGIHAN & AKTIFKAN MONITORING</button></div>
             </form>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="list-cicilan"></div>
         </section>
 
         <section id="sec-akun" class="content-section hidden animate-fade-in max-w-3xl mx-auto pt-4 lg:pt-0">
-            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-600 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
+            <button onclick="nav('dashboard')" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 font-bold mb-6 transition"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</button>
             <div class="flex justify-between mb-8 items-center">
-                <h2 class="text-3xl font-extrabold text-slate-800">Akun Rahasia</h2>
-                <button onclick="lockAccounts()" class="glass-card bg-red-50 text-red-600 px-4 py-2 font-bold text-sm hover:bg-red-100 transition"><i class="fa-solid fa-lock"></i> KUNCI</button>
+                <h2 class="text-3xl font-extrabold text-slate-100">Enkripsi Akun Rahasia</h2>
+                <button onclick="lockAccounts()" class="glass-card bg-red-950/40 text-red-400 px-4 py-2 font-bold text-sm hover:bg-red-900/40 transition"><i class="fa-solid fa-lock"></i> LOCK DATA</button>
             </div>
             <form id="form-akun" class="glass-card p-6 mb-8 flex flex-col md:flex-row gap-4">
-                <input type="text" id="platform-akun" class="input-clean flex-1" placeholder="Platform" required>
-                <input type="text" id="user-akun" class="input-clean flex-1" placeholder="Username" required>
-                <input type="text" id="pass-akun" class="input-clean flex-1" placeholder="Password" required>
-                <button type="submit" class="btn-clean bg-slate-800 text-white hover:bg-black w-full md:w-auto px-8">SIMPAN</button>
+                <input type="text" id="platform-akun" class="input-clean flex-1" placeholder="Nama Platform" required>
+                <input type="text" id="user-akun" class="input-clean flex-1" placeholder="Username / ID" required>
+                <input type="text" id="pass-akun" class="input-clean flex-1" placeholder="Password Kunci" required>
+                <button type="submit" class="btn-clean bg-slate-800 text-slate-200 hover:bg-slate-700 w-full md:w-auto px-8 border border-slate-700">SIMPAN ENKRIPSI</button>
             </form>
             <div class="space-y-4" id="list-akun"></div>
         </section>
     </main>
 
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 glass-card rounded-none rounded-t-2xl border-t border-slate-200 z-50 flex justify-between items-center px-1 py-3 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <button onclick="nav('transaksi')" class="nav-btn btn-transaksi flex flex-col items-center w-full text-slate-400 gap-1 transition-colors">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 glass-card rounded-none rounded-t-2xl border-t border-slate-800/80 z-50 flex justify-between items-center px-1 py-3 pb-safe bg-slate-950/80 shadow-[0_-8px_30px_rgb(0,0,0,0.5)]">
+        <button onclick="nav('transaksi')" class="nav-btn btn-transaksi flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
             <i class="fa-solid fa-wallet text-xl"></i><span class="text-[10px] font-bold">Keuangan</span>
         </button>
-        <button onclick="nav('bisnis')" class="nav-btn btn-bisnis flex flex-col items-center w-full text-slate-400 gap-1 transition-colors">
-            <i class="fa-solid fa-store text-xl"></i><span class="text-[10px] font-bold">Agen</span>
+        <button onclick="nav('bisnis')" class="nav-btn btn-bisnis flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
+            <i class="fa-solid fa-store text-xl"></i><span class="text-[10px] font-bold">Mandiri Link</span>
         </button>
-        <button onclick="nav('joki')" class="nav-btn btn-joki flex flex-col items-center w-full text-slate-400 gap-1 transition-colors">
-            <i class="fa-solid fa-keyboard text-xl"></i><span class="text-[10px] font-bold">Joki</span>
+        <button onclick="nav('joki')" class="nav-btn btn-joki flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
+            <i class="fa-solid fa-keyboard text-xl"></i><span class="text-[10px] font-bold">Joki Kilat</span>
         </button>
-        <button onclick="nav('tugas')" class="nav-btn btn-tugas flex flex-col items-center w-full text-slate-400 gap-1 transition-colors">
+        <button onclick="nav('tugas')" class="nav-btn btn-tugas flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
             <i class="fa-solid fa-book text-xl"></i><span class="text-[10px] font-bold">Tugas</span>
         </button>
-        <button onclick="nav('cicilan')" class="nav-btn btn-cicilan flex flex-col items-center w-full text-slate-400 gap-1 transition-colors">
+        <button onclick="nav('cicilan')" class="nav-btn btn-cicilan flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
             <i class="fa-solid fa-envelope-open-text text-xl"></i><span class="text-[10px] font-bold">Tagihan</span>
         </button>
-        <button onclick="checkPasswordAndNav()" class="nav-btn btn-akun flex flex-col items-center w-full text-slate-400 gap-1 transition-colors">
+        <button onclick="checkPasswordAndNav()" class="nav-btn btn-akun flex flex-col items-center w-full text-slate-500 gap-1 transition-colors">
             <i class="fa-solid fa-lock text-xl"></i><span class="text-[10px] font-bold">Akun</span>
         </button>
     </nav>
 
-    <div id="password-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center hidden z-[100] p-4 transition-opacity">
-        <div class="glass-card p-8 max-w-sm w-full shadow-2xl">
-            <h3 class="text-2xl font-extrabold mb-2 text-center text-slate-800">Akses PIN</h3>
-            <p class="text-sm text-center text-slate-500 mb-6">Masukkan PIN rahasia untuk lanjut.</p>
-            <input type="password" id="input-password" class="input-clean w-full text-center text-3xl tracking-[0.5em] mb-6 font-bold text-blue-600" placeholder="••••">
+    <div id="password-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden z-[100] p-4 transition-opacity">
+        <div class="glass-card p-8 max-w-sm w-full bg-slate-900/90 border border-slate-800 shadow-2xl">
+            <h3 class="text-2xl font-extrabold mb-1 text-center text-slate-100">Keamanan Enkripsi</h3>
+            <p class="text-xs text-center text-slate-400 mb-6">Masukkan PIN Akses Sistem Manajemen Utama.</p>
+            <input type="password" id="input-password" class="input-clean w-full text-center text-3xl tracking-[0.4em] mb-6 font-bold text-blue-500 bg-slate-950" placeholder="••••">
             <div class="flex gap-4">
-                <button onclick="closeModal()" class="btn-clean bg-slate-200 text-slate-600 hover:bg-slate-300">Batal</button>
-                <button onclick="verifyPassword()" class="btn-clean btn-primary">Buka</button>
+                <button onclick="closeModal()" class="btn-clean bg-slate-800 text-slate-300 hover:bg-slate-700 flex-1">Batal</button>
+                <button onclick="verifyPassword()" class="btn-clean btn-primary flex-1">Buka Akses</button>
             </div>
         </div>
     </div>

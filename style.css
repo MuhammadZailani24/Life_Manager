@@ -2,63 +2,86 @@
 
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #0f172a;
+    color: #f1f5f9;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Custom Soft Scrollbar */
-::-webkit-scrollbar { width: 6px; }
+/* Custom Sleek Dark Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-/* Efek Glassmorphism Mewah */
+/* Efek Kaca Transparan Gelap Mewah */
 .glass-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
     border-radius: 1.25rem;
 }
 
-/* Input Minimalis */
+/* Input & Select Khusus Dark Mode */
 .input-clean {
     width: 100%;
     padding: 0.875rem 1rem;
     border-radius: 0.75rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    color: #334155;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid #334155;
+    color: #f8fafc;
     font-weight: 500;
     outline: none;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 }
 .input-clean:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    background: rgba(15, 23, 42, 0.9);
+}
+.input-clean option {
+    background-color: #1e293b;
+    color: #f8fafc;
 }
 
-/* Tombol Elegan */
+/* Tombol Cetak & Aksi Modern */
 .btn-clean {
     width: 100%;
-    padding: 1rem;
+    padding: 0.875rem 1.25rem;
     border-radius: 0.75rem;
     font-weight: 700;
     transition: all 0.2s ease;
     cursor: pointer;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
-.btn-primary { background: #3b82f6; color: white; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3); }
-.btn-primary:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4); }
-.btn-primary:active { transform: translateY(0); box-shadow: none; }
+.btn-primary { 
+    background: linear-gradient(135deg, #3b82f6, #2563eb); 
+    color: white; 
+}
+.btn-primary:hover { 
+    transform: translateY(-1px); 
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35); 
+}
+.btn-secondary {
+    background: rgba(51, 65, 85, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #f1f5f9;
+}
+.btn-secondary:hover {
+    background: #475569;
+    color: #ffffff;
+}
 
-/* Status Navigasi Bawah (Shopee Style) */
-.nav-active { color: #3b82f6 !important; }
+.nav-active { 
+    color: #3b82f6 !important; 
+}
 
-/* Animasi Halus */
-.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.animate-fade-in { animation: fadeIn 0.35s ease-out forwards; }
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
