@@ -1,4 +1,4 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxXPMmLYeiro2Bq2kOLnfbUjXNQKFCwD4SK7vupGsaWqNhpxIDu-8y_VHPelrT521JHqw/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxu0Lvkfi_c_vjC4cmdbwSv5qIDcl-bJpTtRTMI4IUaMruNEi6590Ho3BUG084Shv_-Vg/exec";
 const PIN_RAHASIA = "998877"; 
 
 let oldK = JSON.parse(localStorage.getItem('keuangan'));
