@@ -215,7 +215,10 @@
             </section>
 
             <section id="sec-transaksi" class="content-section hidden max-w-6xl mx-auto">
-                <h2 class="text-xl font-black mb-4 text-slate-100">Mutasi Kas Pribadi</h2>
+                <h2 class="text-xl font-black mb-4 text-slate-100 flex justify-between items-center">
+                    Mutasi Kas Pribadi
+                    <button onclick="fetchKasFromCloud()" id="btn-sync-kas" class="text-xs text-blue-400 hover:text-white transition px-3 py-1 bg-slate-800 rounded-lg"><i class="fa-solid fa-arrows-rotate mr-1"></i> Sync Cloud</button>
+                </h2>
                 <div class="glass-card p-5 mb-6 text-center border-l-4 border-l-blue-500 bg-slate-900/30">
                     <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Total Saldo Aktif</p>
                     <p class="text-3xl font-black text-blue-400" id="total-kas-pribadi">Rp 0</p>
@@ -225,7 +228,7 @@
                     <button onclick="unduhPDF('pribadi', 'gabungan')" class="btn-clean btn-pdf-semua text-xs flex-1"><i class="fa-solid fa-database mr-1"></i> PDF Semua Kas</button>
                 </div>
                 <ul id="list-riwayat" class="space-y-3 mb-6"></ul>
-                <button onclick="clearAllKeuangan()" class="w-full text-xs text-red-500 font-bold p-4 border border-red-500/30 rounded-xl hover:bg-red-500/10 transition-all">BERSIHKAN SEMUA MUTASI KAS</button>
+                <button onclick="clearAllKeuangan()" class="w-full text-xs text-red-500 font-bold p-4 border border-red-500/30 rounded-xl hover:bg-red-500/10 transition-all">BERSIHKAN SEMUA LOKAL KAS</button>
             </section>
 
             <section id="sec-tugas" class="content-section hidden max-w-6xl mx-auto">

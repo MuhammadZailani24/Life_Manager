@@ -1,4 +1,4 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxu0Lvkfi_c_vjC4cmdbwSv5qIDcl-bJpTtRTMI4IUaMruNEi6590Ho3BUG084Shv_-Vg/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw_KMpjFdHlz2TLIPD60tcW_okIe_wkjQ9tuY9rYQ8nxE8bgd77OTjh_QfpnOgJ2GISdA/exec";
 const PIN_RAHASIA = "998877"; 
 
 let oldK = JSON.parse(localStorage.getItem('keuangan'));
@@ -52,12 +52,34 @@ function saveBisnis() { const admin = parseInt(document.getElementById('f-admin-
 function saveJoki() { const newData = { id: "JK-"+Date.now(), nama: document.getElementById('f-nama-j').value, deadline: document.getElementById('f-deadline-j').value, biaya: parseInt(document.getElementById('f-biaya-j').value), wa: "628", email: "lifemanager17@gmail.com", status: "Proses" }; joki.push(newData); simpanData(); closeModal(); updateUI(); sendToBackend({ action: "addJoki", ...newData }); }
 function saveTugas() { const newData = { id: "TGS-"+Date.now(), namaTugas: document.getElementById('f-nama-t').value, matkul: document.getElementById('f-matkul-t').value, deadline: document.getElementById('f-deadline-t').value, tipe: "Individu", email: "lifemanager17@gmail.com", status: "Belum Selesai" }; tugas.push(newData); simpanData(); closeModal(); updateUI(); sendToBackend({ action: "addTugas", ...newData }); }
 function saveCicilan() { const newData = { id: "ID-"+Date.now(), nama: document.getElementById('f-nama-c').value, jumlah: parseInt(document.getElementById('f-jumlah-c').value), tanggalFull: document.getElementById('f-deadline-c').value, email: "lifemanager17@gmail.com", status: "Belum Bayar" }; cicilan.push(newData); simpanData(); closeModal(); updateUI(); sendToBackend({ action: "addTagihan", ...newData }); }
-function saveKas() { const nominal = parseInt(document.getElementById('f-nominal-p').value); const jenis = document.getElementById('f-jenis-p').value; keuangan.total = (jenis === 'masuk') ? keuangan.total + nominal : keuangan.total - nominal; riwayat.unshift({ jenis, nominal, ket: document.getElementById('f-ket-p').value, tanggal: new Date().toLocaleDateString('id-ID'), waktu: new Date().toLocaleTimeString('id-ID') }); simpanData(); closeModal(); updateUI(); }
+
+// FIX: Sinkronisasi Pencatatan Kas Manual ke Cloud
+function saveKas() { 
+    const nominal = parseInt(document.getElementById('f-nominal-p').value); 
+    const jenis = document.getElementById('f-jenis-p').value; 
+    const ket = document.getElementById('f-ket-p').value;
+    const tgl = new Date().toLocaleDateString('id-ID');
+    const wkt = new Date().toLocaleTimeString('id-ID');
+
+    keuangan.total = (jenis === 'masuk') ? keuangan.total + nominal : keuangan.total - nominal; 
+    riwayat.unshift({ jenis, nominal, ket: ket, tanggal: tgl, waktu: wkt }); 
+    simpanData(); closeModal(); updateUI(); 
+    
+    // Mendorong data yang ditulis dari Web menuju ke Google Sheets
+    sendToBackend({
+        action: "addKas",
+        tanggal: tgl,
+        waktu: wkt,
+        jenis: (jenis === 'masuk') ? "Pemasukan (+)" : "Pengeluaran (-)",
+        nominal: nominal,
+        keterangan: ket
+    });
+}
 
 document.getElementById('form-catatan').addEventListener('submit', function(e) { e.preventDefault(); catatanKilat.unshift({ isi: document.getElementById('input-catatan').value, waktu: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) }); simpanData(); this.reset(); updateUI(); });
 function hapusCatatan(index) { catatanKilat.splice(index, 1); simpanData(); updateUI(); }
 
-function clearAllKeuangan() { if(confirm("Yakin hapus data kas & reset saldo?")) { riwayat = []; keuangan.total = 0; simpanData(); updateUI(); } }
+function clearAllKeuangan() { if(confirm("Yakin hapus data kas LOKAL? (Hanya menghapus di layar, tidak di Cloud)")) { riwayat = []; keuangan.total = 0; simpanData(); updateUI(); } }
 function clearAllBisnis() { if(confirm("Yakin hapus riwayat transaksi Mandiri Link?")) { bisnis.riwayat = []; simpanData(); updateUI(); } }
 async function clearAllJoki() { if(confirm("Yakin hapus semua data Joki?")) { joki = []; jokiLogOmset = []; simpanData(); updateUI(); await sendToBackend({ action: "clearAll", tipe: "joki" }, null, "", ""); } }
 async function clearAllTugas() { if(confirm("Yakin hapus semua tugas Uniska?")) { tugas = []; simpanData(); updateUI(); await sendToBackend({ action: "clearAll", tipe: "tugas" }, null, "", ""); } }
@@ -90,15 +112,12 @@ function simpanData() {
     localStorage.setItem('akunPenting', JSON.stringify(akunPenting));
 }
 
-// FIX: PENGAPLIKASIAN ID BARU KE DALAM JS
 function updateUI() {
     joki.sort((a, b) => new Date(a.deadline) - new Date(b.deadline)); tugas.sort((a, b) => new Date(a.deadline) - new Date(b.deadline)); cicilan.sort((a, b) => new Date(a.tanggalFull) - new Date(b.tanggalFull));
     
-    // Khusus di dalam Modul Masing-masing
     const elBisnis = document.getElementById('bisnis-profit'); if(elBisnis) elBisnis.innerText = formatRupiah(bisnis.profit);
     const elKas = document.getElementById('total-kas-pribadi'); if(elKas) elKas.innerText = formatRupiah(keuangan.total);
     
-    // Khusus di Layar Dashboard
     const elTagihan = document.getElementById('count-tagihan'); if(elTagihan) elTagihan.innerText = cicilan.length + " Items";
     const elJoki = document.getElementById('count-joki'); if(elJoki) elJoki.innerText = joki.length + " Items";
     const elTugas = document.getElementById('count-tugas'); if(elTugas) elTugas.innerText = tugas.length + " Items";
@@ -218,4 +237,44 @@ function renderTableAkun() {
     html += '</tbody></table>'; listAkun.innerHTML = html;
 }
 
+// FITUR BARU: ENGINE SINKRONISASI 2 ARAH (FETCH DARI GOOGLE SHEETS)
+async function fetchKasFromCloud() {
+    const btn = document.getElementById('btn-sync-kas');
+    if(btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sedang Menyinkronkan...'; btn.disabled = true; }
+    
+    try {
+        const response = await fetch(GAS_URL + "?action=getKas");
+        const data = await response.json();
+        
+        if (data && Array.isArray(data)) {
+            let totalCloud = 0;
+            let riwayatBaru = [];
+            
+            data.forEach(item => {
+                let localJenis = (item.jenis.toLowerCase().includes('masuk') || item.jenis.includes('+')) ? 'masuk' : 'keluar';
+                if(localJenis === 'masuk') { totalCloud += item.nominal; } 
+                else { totalCloud -= item.nominal; }
+                
+                riwayatBaru.push({
+                    jenis: localJenis,
+                    nominal: item.nominal,
+                    ket: item.keterangan,
+                    tanggal: item.tanggal,
+                    waktu: item.waktu
+                });
+            });
+            
+            riwayat = riwayatBaru;
+            keuangan.total = totalCloud;
+            simpanData();
+            updateUI();
+        }
+    } catch (err) {
+        console.error("Gagal menarik data dari server:", err);
+    }
+    
+    if(btn) { btn.innerHTML = '<i class="fa-solid fa-arrows-rotate mr-1"></i> Sync Cloud'; btn.disabled = false; }
+}
+
 updateUI();
+fetchKasFromCloud(); // Otomatis menyinkronkan data Telegram (Cloud) saat Web pertama kali dibuka
