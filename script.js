@@ -13,7 +13,6 @@ let catatanKilat = JSON.parse(localStorage.getItem('catatanKilatPro')) || [];
 
 let chartInstance = null; 
 
-// Default ke Tema Pastel Hijau Dominan
 let currentTheme = localStorage.getItem('theme_pastel_v1') || 'pastel';
 document.body.setAttribute('data-theme', currentTheme);
 updateThemeIcon();
@@ -43,14 +42,8 @@ setInterval(() => {
     }
 }, 1000);
 
-function toggleAccordion(id) { 
-    document.getElementById(id).classList.toggle('active'); 
-}
-
-function toggleAddMenu() { 
-    const menu = document.getElementById('fab-menu'); 
-    menu.classList.toggle('hidden'); 
-}
+function toggleAccordion(id) { document.getElementById(id).classList.toggle('active'); }
+function toggleAddMenu() { document.getElementById('fab-menu').classList.toggle('hidden'); }
 
 function nav(sectionId) { 
     document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden')); 
@@ -76,9 +69,14 @@ function formatRupiah(angka) {
 async function sendToBackend(payload, btnElement, loadingText, defaultText) {
     if(btnElement) { btnElement.innerText = loadingText; btnElement.disabled = true; }
     try { 
-        await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload), headers: { 'Content-Type': 'application/json' } }); 
+        await fetch(GAS_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: JSON.stringify(payload), 
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
+        }); 
     } catch(err) { 
-        console.error(err); 
+        console.error('Gagal kirim ke backend:', err); 
     }
     if(btnElement) { btnElement.innerText = defaultText; btnElement.disabled = false; }
 }
@@ -145,15 +143,13 @@ function openModal(type) {
     }
 }
 
-function closeModal() { 
-    document.getElementById('modal-container').classList.add('hidden'); 
-}
+function closeModal() { document.getElementById('modal-container').classList.add('hidden'); }
 
 function saveJoki() { 
     const nama = document.getElementById('f-nama-j').value;
     const deadline = document.getElementById('f-deadline-j').value;
     const biaya = parseInt(document.getElementById('f-biaya-j').value) || 0;
-    if(!nama || !deadline) return alert("Lengkapi nama dan deadline proyek!");
+    if(!nama || !deadline || !biaya) return alert("Lengkapi nama, deadline, dan fee proyek!");
 
     const newData = { id: "JK-"+Date.now(), nama, deadline, biaya, wa: "628", email: "lifemanager17@gmail.com", status: "Proses" }; 
     joki.push(newData); 
@@ -177,7 +173,7 @@ function saveCicilan() {
     const nama = document.getElementById('f-nama-c').value;
     const jumlah = parseInt(document.getElementById('f-jumlah-c').value) || 0;
     const tanggalFull = document.getElementById('f-deadline-c').value;
-    if(!nama || !tanggalFull) return alert("Lengkapi nama tagihan dan tanggal jatuh tempo!");
+    if(!nama || !tanggalFull || !jumlah) return alert("Lengkapi nama tagihan, nominal, dan tanggal jatuh tempo!");
 
     const newData = { id: "ID-"+Date.now(), nama, jumlah, tanggalFull, email: "lifemanager17@gmail.com", status: "Belum Bayar" }; 
     cicilan.push(newData); 
@@ -191,19 +187,22 @@ function saveKas() {
     const ket = document.getElementById('f-ket-p').value || (jenis === 'masuk' ? 'Pemasukan' : 'Pengeluaran');
     if(!nominal) return alert("Masukkan nominal yang valid!");
 
-    const tgl = new Date().toLocaleDateString('id-ID');
-    const wkt = new Date().toLocaleTimeString('id-ID');
+    const now = new Date();
+    const tgl = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+    const wkt = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const id = "KAS-" + Date.now();
 
     keuangan.total = (jenis === 'masuk') ? keuangan.total + nominal : keuangan.total - nominal; 
-    riwayat.unshift({ jenis, nominal, ket: ket, tanggal: tgl, waktu: wkt }); 
+    riwayat.unshift({ id, jenis, nominal, ket, tanggal: tgl, waktu: wkt }); 
     simpanData(); closeModal(); updateUI(); 
     
     sendToBackend({
         action: "addKas",
+        id,
         tanggal: tgl,
         waktu: wkt,
         jenis: (jenis === 'masuk') ? "Pemasukan (+)" : "Pengeluaran (-)",
-        nominal: nominal,
+        nominal,
         keterangan: ket
     });
 }
@@ -214,14 +213,12 @@ document.getElementById('form-catatan').addEventListener('submit', function(e) {
     simpanData(); this.reset(); updateUI(); 
 });
 
-function hapusCatatan(index) { 
-    catatanKilat.splice(index, 1); 
-    simpanData(); updateUI(); 
-}
+function hapusCatatan(index) { catatanKilat.splice(index, 1); simpanData(); updateUI(); }
 
-function clearAllKeuangan() { 
-    if(confirm("Yakin hapus data keuangan LOKAL? (Hanya menghapus di layar, tidak di Cloud)")) { 
+async function clearAllKeuangan() { 
+    if(confirm("Yakin hapus semua data keuangan? (Data lama otomatis di-backup di Spreadsheet)")) { 
         riwayat = []; keuangan.total = 0; simpanData(); updateUI(); 
+        await sendToBackend({ action: "clearAll", tipe: "kas" }, null, "", ""); 
     } 
 }
 async function clearAllJoki() { 
@@ -363,7 +360,7 @@ function renderListKas() {
         list.innerHTML = '<div class="glass-card p-6 text-center"><p class="text-xs text-muted italic">Belum ada riwayat transaksi keuangan.</p></div>';
         return;
     }
-    riwayat.slice(0, 15).forEach(r => { 
+    riwayat.slice(0, 20).forEach(r => { 
         const isMasuk = r.jenis === 'masuk';
         list.innerHTML += `
             <li class="glass-card p-4 text-xs flex justify-between items-center border-l-4 ${isMasuk ? 'border-l-emerald-400' : 'border-l-orange-300'}">
@@ -483,9 +480,7 @@ function openEditModal(type, index) {
     modal.classList.remove('hidden');
 }
 
-function closeEditModal() { 
-    document.getElementById('edit-modal').classList.add('hidden'); 
-}
+function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 
 async function saveEdit() {
     const input = document.getElementById('edit-input').value; 
@@ -520,9 +515,10 @@ function renderChart() {
         let d = new Date(); 
         d.setDate(d.getDate()-i); 
         let dateStr = d.toLocaleDateString('id-ID'); 
+        let dateStrPad = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
         labels.push(d.toLocaleDateString('id-ID', {day:'numeric', month:'short'}));
-        dataKeuangan.push(riwayat.filter(r => r.tanggal === dateStr && r.jenis === 'masuk').reduce((a,b) => a + b.nominal, 0)); 
-        dataMentikdev.push(jokiLogOmset.filter(r => r.tanggal === dateStr).reduce((a,b) => a + (b.biaya || 0), 0));
+        dataKeuangan.push(riwayat.filter(r => (r.tanggal === dateStr || r.tanggal === dateStrPad) && r.jenis === 'masuk').reduce((a,b) => a + b.nominal, 0)); 
+        dataMentikdev.push(jokiLogOmset.filter(r => r.tanggal === dateStr || r.tanggal === dateStrPad).reduce((a,b) => a + (b.biaya || 0), 0));
     }
 
     const tickColor = currentTheme === 'dark' ? '#94B8A8' : '#5F7A6E';
@@ -552,20 +548,22 @@ function renderChart() {
 function unduhPDF(modul, range) {
     const { jsPDF } = window.jspdf; 
     const doc = new jsPDF(); 
-    const tglSekarang = new Date().toLocaleDateString('id-ID'); 
+    const now = new Date();
+    const tglSekarang = now.toLocaleDateString('id-ID'); 
+    const tglPad = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
     let judulDokumen = "", headers = [], rows = [];
 
     if (modul === 'joki') {
         judulDokumen = `LAPORAN PENGHASILAN MENTIKDEV - (${range.toUpperCase()})`; 
         headers = [["Waktu/Tanggal", "Nama Project/Klien", "Omset Fee Keuntungan"]];
-        let dataSumber = (range === 'hari') ? jokiLogOmset.filter(item => item.tanggal === tglSekarang) : jokiLogOmset;
+        let dataSumber = (range === 'hari') ? jokiLogOmset.filter(item => item.tanggal === tglSekarang || item.tanggal === tglPad) : jokiLogOmset;
         dataSumber.forEach(item => { 
             rows.push([`${item.waktu || '-'} / ${item.tanggal || '-'}`, item.nama || item.namaProject || '-', formatRupiah(item.biaya)]); 
         });
     } else if (modul === 'pribadi') {
         judulDokumen = `LAPORAN ARUS KEUANGAN PRIBADI - (${range.toUpperCase()})`; 
         headers = [["Waktu/Tanggal", "Arus Mutasi", "Keterangan", "Nominal"]];
-        let dataSumber = (range === 'hari') ? riwayat.filter(item => item.tanggal === tglSekarang) : riwayat;
+        let dataSumber = (range === 'hari') ? riwayat.filter(item => item.tanggal === tglSekarang || item.tanggal === tglPad) : riwayat;
         dataSumber.forEach(item => { 
             rows.push([`${item.waktu} / ${item.tanggal}`, item.jenis === 'masuk' ? 'Pemasukan (+)' : 'Pengeluaran (-)', item.ket, formatRupiah(item.nominal)]); 
         });
@@ -583,29 +581,19 @@ function unduhPDF(modul, range) {
 function checkPasswordAndNav() { document.getElementById('password-modal').classList.remove('hidden'); }
 function closePassword() { document.getElementById('password-modal').classList.add('hidden'); document.getElementById('input-password').value = ''; }
 function verifyPassword() { 
-    if(document.getElementById('input-password').value === PIN_RAHASIA) { 
-        closePassword(); nav('akun'); 
-    } else { 
-        alert("PIN SALAH!"); 
-    } 
+    if(document.getElementById('input-password').value === PIN_RAHASIA) { closePassword(); nav('akun'); } 
+    else { alert("PIN SALAH!"); } 
 }
 function lockAccounts() { nav('dashboard'); }
 
 document.getElementById('form-akun').addEventListener('submit', function(e) { 
     e.preventDefault(); 
     let encryptedPass = btoa(document.getElementById('pass-akun').value);
-    akunPenting.push({ 
-        platform: document.getElementById('platform-akun').value.trim(), 
-        user: document.getElementById('user-akun').value, 
-        pass: encryptedPass 
-    }); 
+    akunPenting.push({ platform: document.getElementById('platform-akun').value.trim(), user: document.getElementById('user-akun').value, pass: encryptedPass }); 
     simpanData(); this.reset(); updateUI(); 
 });
 
-function hapusAkun(index) { 
-    akunPenting.splice(index, 1); 
-    simpanData(); updateUI(); 
-}
+function hapusAkun(index) { akunPenting.splice(index, 1); simpanData(); updateUI(); }
 
 function renderTableAkun() {
     const listAkun = document.getElementById('list-akun');
@@ -635,43 +623,68 @@ function renderTableAkun() {
     listAkun.innerHTML = html;
 }
 
-async function fetchKasFromCloud() {
+// SINKRONISASI PENUH 2 ARAH (KEUANGAN, MENTIKDEV, TUGAS, TAGIHAN)
+async function syncAllFromCloud() {
     const btn = document.getElementById('btn-sync-kas');
     if(btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing...'; btn.disabled = true; }
     
     try {
-        const response = await fetch(GAS_URL + "?action=getKas");
-        const data = await response.json();
+        const response = await fetch(GAS_URL + "?action=getAll");
+        const res = await response.json();
         
-        if (data && Array.isArray(data)) {
-            let totalCloud = 0;
-            let riwayatBaru = [];
-            
-            data.forEach(item => {
-                let localJenis = (item.jenis.toLowerCase().includes('masuk') || item.jenis.includes('+')) ? 'masuk' : 'keluar';
-                if(localJenis === 'masuk') { totalCloud += item.nominal; } 
-                else { totalCloud -= item.nominal; }
-                
-                riwayatBaru.push({
-                    jenis: localJenis,
-                    nominal: item.nominal,
-                    ket: item.keterangan,
-                    tanggal: item.tanggal,
-                    waktu: item.waktu
+        if (res && res.ok) {
+            if (Array.isArray(res.kas)) {
+                let totalCloud = 0;
+                let riwayatBaru = [];
+                res.kas.forEach(item => {
+                    let localJenis = (String(item.jenis).toLowerCase().includes('masuk') || String(item.jenis).includes('+')) ? 'masuk' : 'keluar';
+                    if (localJenis === 'masuk') totalCloud += Number(item.nominal) || 0;
+                    else totalCloud -= Number(item.nominal) || 0;
+                    
+                    riwayatBaru.push({
+                        id: item.id || '',
+                        jenis: localJenis,
+                        nominal: Number(item.nominal) || 0,
+                        ket: item.keterangan || '',
+                        tanggal: item.tanggal || '',
+                        waktu: item.waktu || ''
+                    });
                 });
-            });
-            
-            riwayat = riwayatBaru;
-            keuangan.total = totalCloud;
+                riwayat = riwayatBaru;
+                keuangan.total = totalCloud;
+            }
+
+            if (Array.isArray(res.joki)) {
+                joki = res.joki.filter(item => String(item.status).toLowerCase() !== 'selesai');
+                jokiLogOmset = res.joki.filter(item => String(item.status).toLowerCase() === 'selesai').map(item => ({
+                    ...item,
+                    tanggal: item.deadline || '',
+                    waktu: 'Selesai'
+                }));
+            }
+
+            if (Array.isArray(res.tugas)) {
+                tugas = res.tugas.filter(item => String(item.status).toLowerCase() !== 'selesai');
+            }
+
+            if (Array.isArray(res.tagihan)) {
+                cicilan = res.tagihan.filter(item => String(item.status).toLowerCase() !== 'lunas');
+            }
+
             simpanData();
             updateUI();
         }
     } catch (err) {
         console.error("Gagal menarik data dari server:", err);
+        alert("Gagal sinkronisasi cloud: " + err.message);
     }
     
     if(btn) { btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Sync Cloud'; btn.disabled = false; }
 }
 
+function fetchKasFromCloud() {
+    return syncAllFromCloud();
+}
+
 updateUI();
-fetchKasFromCloud();
+syncAllFromCloud();
