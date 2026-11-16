@@ -1,38 +1,506 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#DDEFE2">
-  <title>LIFE MANAGER • MENTIKDEV</title>
-  <meta http-equiv="refresh" content="2;url=https://script.google.com/macros/s/AKfycbwrlsqrGYDso6-6etIxiD_KkYBnhxodSsLR7fFpaCp9Zkm4Gy3dS8BZetXO-btVwgDNPA/exec">
-  <style>
-    * {box-sizing:border-box}
-    body {margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif; background:linear-gradient(145deg,#e3f3e8,#f9f9f2 55%,#f1eafa); color:#234634}
-    main {text-align:center; max-width:480px; padding:36px 28px; background:rgba(255,255,255,.8); border:1px solid #d7e5dc; border-radius:26px; box-shadow:0 18px 65px #3865471c}
-    .logo {display:inline-grid;place-items:center;width:70px;height:70px;border-radius:21px;background:#b8dec4;font-size:34px; margin-bottom:13px}
-    h1 {margin:3px 0 6px; letter-spacing:-.035em;font-size:28px}
-    .tag {font-size:11px; letter-spacing:.22em;font-weight:700;color:#739482}
-    p {color:#617e69; line-height:1.65; margin:20px 0 24px}
-    a {display:inline-block; padding:13px 22px; border-radius:12px; background:#4d9166;color:white; font-weight:700; text-decoration:none; transition:transform .2s,background .2s}
-    a:hover {background:#367f50;transform:translateY(-2px)}
-    small {display:block; margin-top:24px; color:#839b87}
-  </style>
-  <script>
-    // Halaman GitHub Pages hanyalah pintu masuk. Aplikasi sebenarnya tetap berjalan di Apps Script.
-    window.location.replace('https://script.google.com/macros/s/AKfycbwrlsqrGYDso6-6etIxiD_KkYBnhxodSsLR7fFpaCp9Zkm4Gy3dS8BZetXO-btVwgDNPA/exec');
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFE MANAGER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Ikon untuk Android & iOS -->
+    <link rel="apple-touch-icon" href="data:image/jpeg;base64,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">
+    <link rel="icon" href="data:image/jpeg;base64,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">
+    <link rel="icon" href="data:image/jpeg;base64,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">
+    <link rel="icon" href="data:image/jpeg;base64,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">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
-<body>
-  <main>
-    <div class="logo" aria-hidden="true">🌱</div>
-    <div class="tag">YOUR DAILY SPACE</div>
-    <h1>LIFE MANAGER</h1>
-    <div class="tag">MENTIKDEV</div>
-    <p>Membuka aplikasi LIFE MANAGER yang terhubung dengan Google Spreadsheet dan Telegram Bot.</p>
-    <a href="https://script.google.com/macros/s/AKfycbwrlsqrGYDso6-6etIxiD_KkYBnhxodSsLR7fFpaCp9Zkm4Gy3dS8BZetXO-btVwgDNPA/exec" rel="noreferrer">Buka LIFE MANAGER</a>
-    <small>Jika tidak berpindah otomatis, klik tombol di atas.</small>
-  </main>
+<body data-theme="pastel">
+
+    <!-- SIDEBAR DESKTOP -->
+    <aside class="hidden lg:flex fixed left-0 top-0 w-72 sidebar-pastel flex-col h-screen z-[90]">
+        <div class="p-7 border-b border-theme flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+                <i class="fa-solid fa-leaf text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight brand-title">LIFE MANAGER</h1>
+                <p class="text-[11px] font-semibold text-muted tracking-wider uppercase">Bos Zailani</p>
+            </div>
+        </div>
+
+        <nav class="p-5 flex flex-col gap-2 flex-1 overflow-y-auto">
+            <button onclick="nav('dashboard')" data-nav="dashboard" class="nav-btn active-nav flex items-center gap-3.5 w-full text-left p-3.5 rounded-2xl font-semibold text-sm">
+                <span class="nav-icon-box"><i class="fa-solid fa-border-all"></i></span>
+                <span>Dashboard</span>
+            </button>
+            <button onclick="nav('transaksi')" data-nav="transaksi" class="nav-btn flex items-center gap-3.5 w-full text-left p-3.5 rounded-2xl font-semibold text-sm">
+                <span class="nav-icon-box"><i class="fa-solid fa-wallet"></i></span>
+                <span>Keuangan</span>
+            </button>
+            <button onclick="nav('joki')" data-nav="joki" class="nav-btn flex items-center gap-3.5 w-full text-left p-3.5 rounded-2xl font-semibold text-sm">
+                <span class="nav-icon-box"><i class="fa-solid fa-code"></i></span>
+                <span>MENTIKDEV</span>
+            </button>
+            <button onclick="nav('tugas')" data-nav="tugas" class="nav-btn flex items-center gap-3.5 w-full text-left p-3.5 rounded-2xl font-semibold text-sm">
+                <span class="nav-icon-box"><i class="fa-solid fa-book-open"></i></span>
+                <span>Tugas Uniska</span>
+            </button>
+            <button onclick="nav('cicilan')" data-nav="cicilan" class="nav-btn flex items-center gap-3.5 w-full text-left p-3.5 rounded-2xl font-semibold text-sm">
+                <span class="nav-icon-box"><i class="fa-solid fa-receipt"></i></span>
+                <span>Tagihan Pribadi</span>
+            </button>
+
+            <div class="mt-auto pt-4 border-t border-theme">
+                <button onclick="checkPasswordAndNav()" class="nav-btn nav-vault flex items-center gap-3.5 w-full text-left p-3.5 rounded-2xl font-semibold text-sm">
+                    <span class="nav-icon-box vault-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                    <span>Akun Rahasia</span>
+                </button>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="lg:ml-72 flex flex-col min-h-screen relative">
+        
+        <!-- TOP HEADER -->
+        <header class="px-4 py-3.5 md:px-8 md:py-4 flex justify-between items-center sticky top-0 z-[80] topbar-pastel">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white shadow-sm lg:hidden">
+                    <i class="fa-solid fa-leaf text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold tracking-tight brand-title lg:hidden">LIFE MANAGER</h1>
+                    <p id="live-clock" class="text-[10px] md:text-xs font-semibold text-muted uppercase tracking-wide"></p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <button onclick="toggleAddMenu()" class="header-action-btn btn-add-pastel px-3.5 h-10 rounded-xl flex items-center gap-2 font-bold text-xs shadow-sm" title="Tambah Data Baru">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="hidden sm:inline">Tambah</span>
+                </button>
+                <button onclick="checkPasswordAndNav()" class="header-action-btn btn-vault-pastel w-10 h-10 rounded-xl flex items-center justify-center shadow-sm" title="Brankas Akun Rahasia">
+                    <i class="fa-solid fa-lock"></i>
+                </button>
+                <button onclick="toggleTheme()" class="header-action-btn btn-theme-pastel w-10 h-10 rounded-xl flex items-center justify-center shadow-sm" title="Ganti Mode Tema">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENT SECTIONS -->
+        <main class="flex-1 p-4 md:p-8 pb-32 max-w-6xl w-full mx-auto">
+            
+            <!-- 1. DASHBOARD -->
+            <section id="sec-dashboard" class="content-section block animate-fade-in">
+                <div class="hero-pastel p-6 md:p-7 rounded-3xl mb-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold badge-mint mb-2">
+                            <i class="fa-solid fa-sparkles"></i> Workspace Terpadu
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Halo, Muhammad Zailani!</h2>
+                        <p class="text-muted mt-1 text-sm font-medium">Kelola jadwal akademik, proyek MENTIKDEV, dan keuangan dalam satu tampilan rapi.</p>
+                    </div>
+                    <div class="flex items-center gap-3 self-start md:self-center">
+                        <div class="saldo-mini-pill px-4 py-3 rounded-2xl">
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-muted">Saldo Keuangan</p>
+                            <p id="dash-saldo-preview" class="text-lg font-extrabold text-emerald-600 dark-mint-text">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 3 STAT CARDS (PASTEL TRIO: GREEN, PEACH, LAVENDER) -->
+                <div class="grid grid-cols-3 gap-3 md:gap-5 mb-8">
+                    <div onclick="nav('tugas')" class="glass-card stat-card stat-mint p-4 md:p-5 cursor-pointer">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="stat-icon icon-mint"><i class="fa-solid fa-book-open"></i></span>
+                            <i class="fa-solid fa-arrow-up-right text-[11px] opacity-40"></i>
+                        </div>
+                        <h3 class="text-muted text-[10px] md:text-xs font-bold uppercase tracking-wider">Tugas Aktif</h3>
+                        <p id="count-tugas" class="text-lg md:text-2xl font-extrabold mt-0.5 truncate">0 Items</p>
+                    </div>
+
+                    <div onclick="nav('joki')" class="glass-card stat-card stat-peach p-4 md:p-5 cursor-pointer">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="stat-icon icon-peach"><i class="fa-solid fa-code"></i></span>
+                            <i class="fa-solid fa-arrow-up-right text-[11px] opacity-40"></i>
+                        </div>
+                        <h3 class="text-muted text-[10px] md:text-xs font-bold uppercase tracking-wider">MENTIKDEV</h3>
+                        <p id="count-joki" class="text-lg md:text-2xl font-extrabold mt-0.5 truncate">0 Items</p>
+                    </div>
+
+                    <div onclick="nav('cicilan')" class="glass-card stat-card stat-lavender p-4 md:p-5 cursor-pointer">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="stat-icon icon-lavender"><i class="fa-solid fa-receipt"></i></span>
+                            <i class="fa-solid fa-arrow-up-right text-[11px] opacity-40"></i>
+                        </div>
+                        <h3 class="text-muted text-[10px] md:text-xs font-bold uppercase tracking-wider">Tagihan Aktif</h3>
+                        <p id="count-tagihan" class="text-lg md:text-2xl font-extrabold mt-0.5 truncate">0 Items</p>
+                    </div>
+                </div>
+
+                <!-- PRIORITAS TERDEKAT -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-base md:text-lg font-extrabold flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-xl badge-peach flex items-center justify-center text-sm"><i class="fa-solid fa-fire"></i></span>
+                            Prioritas Terdekat
+                        </h2>
+                    </div>
+                    <div id="unified-feed" class="space-y-3"></div>
+                </div>
+
+                <!-- ACCORDION JADWAL KULIAH -->
+                <div class="glass-card p-5 mb-5">
+                    <div class="accordion-header" onclick="toggleAccordion('acc-kuliah')">
+                        <span class="font-bold text-sm md:text-base flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl badge-mint flex items-center justify-center"><i class="fa-solid fa-graduation-cap"></i></span>
+                            Jadwal Kuliah Informatika Uniska
+                        </span>
+                        <i class="fa-solid fa-chevron-down opacity-50 transition-transform"></i>
+                    </div>
+                    <div id="acc-kuliah" class="accordion-content pt-4">
+                        <div class="overflow-x-auto rounded-xl border border-theme">
+                            <table class="w-full text-left text-xs md:text-sm">
+                                <thead class="table-head-pastel text-[10px] uppercase font-bold tracking-wider">
+                                    <tr>
+                                        <th class="px-3 py-3 w-1 whitespace-nowrap">Hari</th>
+                                        <th class="px-3 py-3">Mata Kuliah</th>
+                                        <th class="px-3 py-3 text-right w-1 whitespace-nowrap">Jam</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-theme font-medium">
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Senin</td>
+                                        <td class="px-3 py-3 leading-tight">Jaringan Syaraf Tiruan</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">07.30 - 09.00</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Senin</td>
+                                        <td class="px-3 py-3 leading-tight">Testing dan Implementasi di Bidang TI</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">09.10 - 10.40</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Senin</td>
+                                        <td class="px-3 py-3 leading-tight">Metodologi dan Penelitian di Bidang TI</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">10.50 - 12.20</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Senin</td>
+                                        <td class="px-3 py-3 leading-tight">Keamanan Sistem Komputer</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">13.00 - 14.30</td>
+                                    </tr>
+                                    <tr class="table-row-muted">
+                                        <td class="px-3 py-3 font-bold whitespace-nowrap">Selasa</td>
+                                        <td class="px-3 py-3 italic">Libur Akademik / Free Time</td>
+                                        <td class="px-3 py-3 text-right whitespace-nowrap">-</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Rabu</td>
+                                        <td class="px-3 py-3 leading-tight">Manajemen Perangkat Lunak</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">14.40 - 16.10</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Rabu</td>
+                                        <td class="px-3 py-3 leading-tight">Pengolahan Citra</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">16.20 - 17.50</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Kamis</td>
+                                        <td class="px-3 py-3 leading-tight">Etika Profesi</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">07.30 - 09.00</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Kamis</td>
+                                        <td class="px-3 py-3 leading-tight">Fiqih</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">09.10 - 10.40</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Kamis</td>
+                                        <td class="px-3 py-3 leading-tight">Sistem Penunjang Keputusan</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">10.50 - 12.20</td>
+                                    </tr>
+                                    <tr class="table-row-hover">
+                                        <td class="px-3 py-3 font-bold text-emerald-600 dark-mint-text whitespace-nowrap">Kamis</td>
+                                        <td class="px-3 py-3 leading-tight">Riset Operasi</td>
+                                        <td class="px-3 py-3 text-right text-muted whitespace-nowrap text-xs">13.00 - 14.30</td>
+                                    </tr>
+                                    <tr class="table-row-muted">
+                                        <td class="px-3 py-3 font-bold whitespace-nowrap">Jumat</td>
+                                        <td class="px-3 py-3 italic">Libur Akademik / Free Time</td>
+                                        <td class="px-3 py-3 text-right whitespace-nowrap">-</td>
+                                    </tr>
+                                    <tr class="table-row-muted">
+                                        <td class="px-3 py-3 font-bold whitespace-nowrap">Sabtu</td>
+                                        <td class="px-3 py-3 italic">Libur Akademik / Weekend</td>
+                                        <td class="px-3 py-3 text-right whitespace-nowrap">-</td>
+                                    </tr>
+                                    <tr class="table-row-muted">
+                                        <td class="px-3 py-3 font-bold whitespace-nowrap">Minggu</td>
+                                        <td class="px-3 py-3 italic">Libur Akademik / Weekend</td>
+                                        <td class="px-3 py-3 text-right whitespace-nowrap">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACCORDION ANALITIK -->
+                <div class="glass-card p-5 mb-5">
+                    <div class="accordion-header" onclick="toggleAccordion('acc-chart')">
+                        <span class="font-bold text-sm md:text-base flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl badge-lavender flex items-center justify-center"><i class="fa-solid fa-chart-line"></i></span>
+                            Analitik Keuangan & MENTIKDEV (7 Hari)
+                        </span>
+                        <i class="fa-solid fa-chevron-down opacity-50 transition-transform"></i>
+                    </div>
+                    <div id="acc-chart" class="accordion-content pt-4">
+                        <div class="h-64"><canvas id="grafikBisnis"></canvas></div>
+                    </div>
+                </div>
+                
+                <!-- CATATAN KILAT -->
+                <div class="glass-card p-5 flex flex-col">
+                    <h3 class="text-sm font-bold mb-4 flex items-center gap-2.5">
+                        <span class="w-7 h-7 rounded-lg badge-peach flex items-center justify-center text-xs"><i class="fa-solid fa-bolt"></i></span>
+                        Catatan Kilat (Brain Dump)
+                    </h3>
+                    <form id="form-catatan" class="flex gap-2.5 mb-3">
+                        <input type="text" id="input-catatan" class="input-clean py-2.5 text-xs md:text-sm flex-1" placeholder="Ketik ide cepat atau pengingat..." required>
+                        <button type="submit" class="btn-primary px-5 rounded-xl text-sm font-bold flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </form>
+                    <ul id="list-catatan" class="space-y-2 max-h-48 overflow-y-auto pr-1"></ul>
+                </div>
+            </section>
+
+            <!-- 2. KEUANGAN (EX-KAS) -->
+            <section id="sec-transaksi" class="content-section hidden animate-fade-in">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-extrabold">Keuangan</h2>
+                        <p class="text-xs text-muted">Catatan pemasukan, pengeluaran, dan riwayat saldo</p>
+                    </div>
+                    <button onclick="fetchKasFromCloud()" id="btn-sync-kas" class="btn-sync-pastel text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate"></i> Sync Cloud
+                    </button>
+                </div>
+
+                <div class="glass-card saldo-card-mint p-6 mb-6 text-center">
+                    <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider badge-mint mb-2">Total Saldo Aktif</span>
+                    <p class="text-3xl md:text-4xl font-black text-emerald-600 dark-mint-text" id="total-kas-pribadi">Rp 0</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <button onclick="unduhPDF('pribadi', 'hari')" class="btn-clean btn-pdf-hari text-xs">
+                        <i class="fa-solid fa-file-pdf"></i> PDF Harian
+                    </button>
+                    <button onclick="unduhPDF('pribadi', 'gabungan')" class="btn-clean btn-pdf-semua text-xs">
+                        <i class="fa-solid fa-database"></i> PDF Semua Keuangan
+                    </button>
+                </div>
+
+                <ul id="list-riwayat" class="space-y-3 mb-6"></ul>
+                <button onclick="clearAllKeuangan()" class="btn-danger-outline w-full text-xs font-bold p-3.5 rounded-xl">
+                    BERSIHKAN SEMUA DATA LOKAL KEUANGAN
+                </button>
+            </section>
+
+            <!-- 3. MENTIKDEV (EX-JOKI KILAT) -->
+            <section id="sec-joki" class="content-section hidden animate-fade-in">
+                <div class="mb-5">
+                    <h2 class="text-xl md:text-2xl font-extrabold">MENTIKDEV</h2>
+                    <p class="text-xs text-muted">Manajemen proyek klien, tenggat waktu, dan omset</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <button onclick="unduhPDF('joki', 'hari')" class="btn-clean btn-pdf-hari text-xs">
+                        <i class="fa-solid fa-file-pdf"></i> PDF Omset Harian
+                    </button>
+                    <button onclick="unduhPDF('joki', 'gabungan')" class="btn-clean btn-pdf-semua text-xs">
+                        <i class="fa-solid fa-database"></i> PDF Semua Omset
+                    </button>
+                </div>
+
+                <div id="list-joki" class="space-y-3 mb-6"></div>
+                <button onclick="clearAllJoki()" class="btn-danger-outline w-full text-xs font-bold p-3.5 rounded-xl">
+                    BERSIHKAN SEMUA DATA MENTIKDEV
+                </button>
+            </section>
+
+            <!-- 4. TUGAS KULIAH -->
+            <section id="sec-tugas" class="content-section hidden animate-fade-in">
+                <div class="mb-5">
+                    <h2 class="text-xl md:text-2xl font-extrabold">Manajemen Tugas Kuliah</h2>
+                    <p class="text-xs text-muted">Daftar tugas akademik dan batas pengumpulan</p>
+                </div>
+                <div id="list-tugas" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+                <button onclick="clearAllTugas()" class="btn-danger-outline w-full text-xs font-bold p-3.5 rounded-xl">
+                    BERSIHKAN SEMUA DATA TUGAS
+                </button>
+            </section>
+
+            <!-- 5. TAGIHAN PRIBADI -->
+            <section id="sec-cicilan" class="content-section hidden animate-fade-in">
+                <div class="mb-5">
+                    <h2 class="text-xl md:text-2xl font-extrabold">Daftar Tagihan Aktif</h2>
+                    <p class="text-xs text-muted">Pantau jatuh tempo tagihan agar tepat waktu</p>
+                </div>
+                <div id="list-cicilan" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+                <button onclick="clearAllCicilan()" class="btn-danger-outline w-full text-xs font-bold p-3.5 rounded-xl">
+                    BERSIHKAN SEMUA DATA TAGIHAN
+                </button>
+            </section>
+
+            <!-- 6. AKUN RAHASIA -->
+            <section id="sec-akun" class="content-section hidden animate-fade-in">
+                <div class="flex justify-between mb-6 items-center">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-extrabold">Brankas Akun Rahasia</h2>
+                        <p class="text-xs text-muted">Penyimpanan kredensial terenkripsi lokal</p>
+                    </div>
+                    <button onclick="lockAccounts()" class="btn-danger-outline px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-lock"></i> KUNCI BRANKAS
+                    </button>
+                </div>
+                
+                <form id="form-akun" class="glass-card p-6 mb-6">
+                    <h3 class="text-sm font-bold mb-4 border-b border-theme pb-2.5 flex items-center gap-2">
+                        <i class="fa-solid fa-key text-emerald-500"></i> Tambah Akun Baru
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div>
+                            <label class="block text-xs font-bold text-muted mb-1.5">Platform / Kategori</label>
+                            <input type="text" id="platform-akun" class="input-clean text-sm w-full" placeholder="Cth: Google, GitHub, Bank..." required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-muted mb-1.5">Username / Email</label>
+                            <input type="text" id="user-akun" class="input-clean text-sm w-full" placeholder="Ketik di sini..." required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-muted mb-1.5">Password</label>
+                            <input type="text" id="pass-akun" class="input-clean text-sm w-full" placeholder="Kunci rahasia" required>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn-clean btn-primary w-full h-[46px] text-sm">SIMPAN DATA</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="glass-card p-3 md:p-6 overflow-x-auto">
+                    <div id="list-akun" class="w-full min-w-[600px]"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL PILIH AKSI TAMBAH -->
+    <div id="fab-menu" class="fixed inset-0 modal-backdrop-pastel z-[200] hidden flex items-center justify-center p-4 animate-fade-in">
+        <div class="glass-card modal-box-pastel w-full max-w-sm p-6 relative">
+            <button onclick="toggleAddMenu()" class="modal-close-btn absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="font-extrabold text-lg mb-1">Tambah Data Baru</h3>
+            <p class="text-xs text-muted mb-5">Pilih kategori yang ingin dicatat</p>
+            <div class="space-y-2.5">
+                <button onclick="openModal('modal-pribadi')" class="quick-option-btn w-full p-3.5 rounded-2xl text-left font-bold text-sm flex items-center gap-3.5">
+                    <span class="w-9 h-9 rounded-xl badge-mint flex items-center justify-center"><i class="fa-solid fa-wallet"></i></span>
+                    <div>
+                        <p>Catat Keuangan</p>
+                        <p class="text-[11px] font-normal text-muted">Pemasukan atau pengeluaran</p>
+                    </div>
+                </button>
+                <button onclick="openModal('modal-joki')" class="quick-option-btn w-full p-3.5 rounded-2xl text-left font-bold text-sm flex items-center gap-3.5">
+                    <span class="w-9 h-9 rounded-xl badge-peach flex items-center justify-center"><i class="fa-solid fa-code"></i></span>
+                    <div>
+                        <p>Project MENTIKDEV</p>
+                        <p class="text-[11px] font-normal text-muted">Tambah proyek klien baru</p>
+                    </div>
+                </button>
+                <button onclick="openModal('modal-tugas')" class="quick-option-btn w-full p-3.5 rounded-2xl text-left font-bold text-sm flex items-center gap-3.5">
+                    <span class="w-9 h-9 rounded-xl badge-mint flex items-center justify-center"><i class="fa-solid fa-book-open"></i></span>
+                    <div>
+                        <p>Tugas Kuliah</p>
+                        <p class="text-[11px] font-normal text-muted">Jadwal & deadline akademik</p>
+                    </div>
+                </button>
+                <button onclick="openModal('modal-tagihan')" class="quick-option-btn w-full p-3.5 rounded-2xl text-left font-bold text-sm flex items-center gap-3.5">
+                    <span class="w-9 h-9 rounded-xl badge-lavender flex items-center justify-center"><i class="fa-solid fa-receipt"></i></span>
+                    <div>
+                        <p>Tagihan Baru</p>
+                        <p class="text-[11px] font-normal text-muted">Pengingat pembayaran pribadi</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION MOBILE (5 MENU PROPORSIONAL) -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 bottom-nav-pastel z-[100] grid grid-cols-5 items-center px-2 py-2.5">
+        <div data-nav="dashboard" class="nav-item active flex flex-col items-center gap-1 cursor-pointer" onclick="nav('dashboard')">
+            <span class="bottom-nav-pill"><i class="fa-solid fa-house text-base"></i></span>
+            <span class="text-[10px] font-bold">Beranda</span>
+        </div>
+        <div data-nav="transaksi" class="nav-item flex flex-col items-center gap-1 cursor-pointer" onclick="nav('transaksi')">
+            <span class="bottom-nav-pill"><i class="fa-solid fa-wallet text-base"></i></span>
+            <span class="text-[10px] font-bold">Keuangan</span>
+        </div>
+        <div data-nav="joki" class="nav-item flex flex-col items-center gap-1 cursor-pointer" onclick="nav('joki')">
+            <span class="bottom-nav-pill"><i class="fa-solid fa-code text-base"></i></span>
+            <span class="text-[10px] font-bold">MENTIKDEV</span>
+        </div>
+        <div data-nav="tugas" class="nav-item flex flex-col items-center gap-1 cursor-pointer" onclick="nav('tugas')">
+            <span class="bottom-nav-pill"><i class="fa-solid fa-book-open text-base"></i></span>
+            <span class="text-[10px] font-bold">Tugas</span>
+        </div>
+        <div data-nav="cicilan" class="nav-item flex flex-col items-center gap-1 cursor-pointer" onclick="nav('cicilan')">
+            <span class="bottom-nav-pill"><i class="fa-solid fa-receipt text-base"></i></span>
+            <span class="text-[10px] font-bold">Tagihan</span>
+        </div>
+    </nav>
+
+    <!-- MODAL INPUT FORM -->
+    <div id="modal-container" class="fixed inset-0 modal-backdrop-pastel z-[200] hidden flex items-center justify-center p-4">
+        <div class="glass-card modal-box-pastel w-full max-w-md p-6 max-h-[90vh] overflow-y-auto" id="modal-content"></div>
+    </div>
+
+    <!-- MODAL EDIT -->
+    <div id="edit-modal" class="fixed inset-0 modal-backdrop-pastel z-[200] hidden flex items-center justify-center p-4">
+        <div class="glass-card modal-box-pastel w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-extrabold text-lg" id="edit-title">Ubah Data</h3>
+                <button onclick="closeEditModal()" class="modal-close-btn w-8 h-8 flex items-center justify-center rounded-full">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <input type="text" id="edit-input" class="input-clean w-full mb-5 font-bold">
+            <button onclick="saveEdit()" class="btn-clean btn-primary w-full">Simpan Perubahan</button>
+        </div>
+    </div>
+
+    <!-- MODAL PASSWORD BRANKAS -->
+    <div id="password-modal" class="fixed inset-0 modal-backdrop-pastel z-[300] hidden flex items-center justify-center p-6">
+        <div class="glass-card modal-box-pastel p-8 w-full max-w-xs text-center">
+            <div class="w-12 h-12 rounded-2xl badge-mint mx-auto mb-3 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="font-extrabold mb-1 uppercase text-sm tracking-wide">Akses Brankas</h3>
+            <p class="text-xs text-muted mb-5">Masukkan PIN keamanan Anda</p>
+            <input type="password" id="input-password" class="input-clean text-center text-2xl tracking-[0.5em] mb-6 font-extrabold text-emerald-600" placeholder="••••••">
+            <div class="flex gap-3">
+                <button onclick="closePassword()" class="btn-clean btn-secondary flex-1 text-sm">Batal</button>
+                <button onclick="verifyPassword()" class="btn-clean btn-primary flex-1 text-sm">Buka</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
